@@ -1173,6 +1173,7 @@
         let registeredUsers = [];
         let totalSold = 0;
         let currentFilter = 'all';
+        let lastLocalMutationAt = 0;
 
         // แสดงปุ่มหมวดหมู่หน้าร้าน + ซิงค์ตัวเลือกในหลังบ้าน
         function renderCategories() {
@@ -1353,8 +1354,8 @@
                 return;
             }
 
-            // ซิงค์ข้อมูลสต็อกล่าสุดจาก Google Sheets ก่อนตัดสต็อก เพื่อป้องกันการขายรหัสซ้ำข้ามเครื่อง
-            if (googleScriptWebAppUrl) {
+            // ซิงค์ข้อมูลสต็อกล่าสุดจาก Google Sheets เฉพาะเมื่อไม่มีการเปลี่ยนแปลงในเครื่องช่วง 8 วินาทีล่าสุด (ป้องกันค่าชีตเก่าทับยอดเติมเงิน)
+            if (googleScriptWebAppUrl && (Date.now() - lastLocalMutationAt > 8000)) {
                 try {
                     await syncFromGoogleSheet(false);
                 } catch (e) {}
@@ -1363,7 +1364,7 @@
             const product = productsData.find(p => p.id === id);
             if (!product) return;
 
-            // หากเป็นสินค้าหมวดหมู่เว็บไซต์ เปิดหน้าชำระเงิน + แนบสลิป + ส่งไอดีไลน์/คิวอาร์โค้ดไลน์
+            // หากเป็นสินค้าหมวดหมู่เว็บไซต์ เปิดหน้ากรอกบรีฟเว็บไซต์ + แนบรูปบัญชี/รูปกฎ + ส่งรูปทางไลน์
             if (product.category === 'website') {
                 openWebsiteOrderModal(product);
                 return;
@@ -1380,14 +1381,21 @@
                 return;
             }
 
-            if (userBalance < product.price) {
-                showToast(`ยอดเงินไม่เพียงพอ (ขาดอีก ${(product.price - userBalance).toFixed(2)} ฿) กรุณาเติมเงินก่อนนะคะ`);
+            const currentCredit = Number(userBalance) || 0;
+            const itemPrice = Number(product.price) || 0;
+
+            if (currentCredit < itemPrice) {
+                showToast(`ยอดเงินไม่เพียงพอ (ขาดอีก ${(itemPrice - currentCredit).toFixed(2)} ฿) กรุณาเติมเงินก่อนนะคะ`);
                 openTopupModal();
                 return;
             }
 
-            userBalance -= product.price;
-            if (currentUser) currentUser.balance = userBalance;
+            userBalance = Number((currentCredit - itemPrice).toFixed(2));
+            if (currentUser) {
+                currentUser.balance = userBalance;
+                const regEntry = registeredUsers.find(u => u.username === currentUser.username);
+                if (regEntry) regEntry.balance = userBalance;
+            }
             document.getElementById('userBalance').innerText = `${userBalance.toFixed(2)} ฿`;
 
             // ดึงบัญชีพร้อมข้อมูลเฉพาะบุคคลที่ยังสถานะ 'available' เท่านั้น (ไม่หยิบรหัสที่ status === 'sold' มาขายซ้ำเด็ดขาด)
@@ -1492,70 +1500,116 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
             renderProducts();
             if (isAdminAuthenticated) {
+                renderAdminSummary();
                 renderAdminProducts();
                 renderAdminMailAccounts();
                 renderAdminOrders();
             }
             await syncToGoogleSheet();
+            showToast(`สั่งซื้อ ${product.name} สำเร็จ! ยอดคงเหลือ ${userBalance.toFixed(2)} ฿`);
         }
 
-        // หน้าต่างสั่งซื้อสินค้าหมวดหมู่เว็บไซต์ (ชำระเงิน + แนบสลิป + ส่งไอดีไลน์/คิวอาร์โค้ดไลน์)
-        let pendingWebsiteQrDataUrl = '';
+        // หน้าต่างสั่งซื้อสินค้าหมวดหมู่เว็บไซต์ (กรอกบรีฟเว็บไซต์ครบทุกช่อง + แนบรูปบัญชี / รูปกฎ + ส่งรูปทางไลน์)
+        let pendingWebAccountImgDataUrl = '';
+        let pendingWebRulesImgDataUrl = '';
 
         function openWebsiteOrderModal(product) {
-            pendingWebsiteQrDataUrl = '';
+            const currentCredit = Number(userBalance) || 0;
+            const itemPrice = Number(product.price) || 0;
+
+            if (currentCredit < itemPrice) {
+                showToast(`ยอดเงินไม่เพียงพอ (ขาดอีก ${(itemPrice - currentCredit).toFixed(2)} ฿) กรุณาเติมเงินก่อนสั่งซื้อนะคะ`);
+                openTopupModal();
+                return;
+            }
+
+            pendingWebAccountImgDataUrl = '';
+            pendingWebRulesImgDataUrl = '';
             const content = document.getElementById('orderModalContent');
             content.innerHTML = `
                 <div class="space-y-1">
-                    <span class="bg-pink-100 text-pink-600 border border-pink-200 text-[11px] font-bold px-3 py-0.5 rounded-full">สั่งซื้อแพ็กเกจเว็บไซต์</span>
+                    <span class="bg-pink-100 text-pink-600 border border-pink-200 text-[11px] font-bold px-3 py-0.5 rounded-full">แบบฟอร์มบรีฟสั่งทำเว็บไซต์</span>
                     <h3 class="font-cute text-lg sm:text-xl font-bold text-slate-800 pt-1">${product.name}</h3>
-                    <p class="text-xs text-slate-500">ชำระเงิน แนบสลิป และแจ้งช่องทางไลน์สำหรับส่งงาน</p>
+                    <p class="text-xs text-slate-500">กรอกรายละเอียดบรีฟด้านล่างได้เลยค่ะ ระบบจะหักเครดิตทันที</p>
                 </div>
 
-                <!-- กล่อง QR Code โอนเงิน -->
-                <div class="bg-white p-3.5 rounded-3xl border-2 border-dashed border-sky-300 text-center space-y-1.5 shadow-2xs">
-                    <div class="inline-block bg-gradient-to-r from-sky-400 to-pink-400 text-white text-[10px] font-bold px-3 py-0.5 rounded-full">
-                        THAI QR PAYMENT • PROMPTPAY
+                <!-- กล่องสรุปยอดเครดิตที่จะถูกหัก -->
+                <div class="bg-white p-3 rounded-2xl border-2 border-dashed border-sky-300 text-center space-y-1 shadow-2xs">
+                    <div class="flex items-center justify-between text-xs px-2">
+                        <span class="text-slate-500">เครดิตคงเหลือของคุณ:</span>
+                        <span class="font-bold text-sky-600">${currentCredit.toFixed(2)} ฿</span>
                     </div>
-                    <div class="bg-white p-2 rounded-2xl inline-block border-2 border-pink-300">
-                        <img src="${paymentConfig.customQrUrl}" alt="PromptPay QR Code" onerror="this.onerror=null; this.src='https://placehold.co/180x180/FFFFFF/FB7185?text=QR+Code';" class="w-36 h-36 object-contain mx-auto">
+                    <div class="flex items-center justify-between text-xs px-2">
+                        <span class="text-slate-500">ยอดหักค่าแพ็กเกจ:</span>
+                        <span class="font-bold text-pink-500">-${itemPrice.toFixed(2)} ฿</span>
                     </div>
-                    <p class="font-bold text-slate-800 text-xs">ชื่อบัญชี: ${paymentConfig.accountName}</p>
-                    <p class="text-sky-600 font-cute font-bold text-base">ยอดชำระ: ${product.price.toFixed(2)} บาท</p>
-                    <p class="text-[10px] text-pink-600 font-semibold">ห้ามนำคิวอาโค้ดไปแอบอ้างเด็ดขาด</p>
+                    <div class="border-t border-pink-100 pt-1 flex items-center justify-between text-xs px-2">
+                        <span class="font-semibold text-slate-700">คงเหลือหลังสั่งซื้อ:</span>
+                        <span class="font-cute font-bold text-emerald-600 text-sm">${(currentCredit - itemPrice).toFixed(2)} ฿</span>
+                    </div>
                 </div>
 
-                <!-- ฟอร์มแนบสลิป และกรอกช่องทางส่งงานในไลน์ -->
-                <div class="bg-white p-4 rounded-2xl border border-pink-200 text-left space-y-3 text-xs">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">1. แนบสลิปโอนเงิน <span class="text-pink-500">*</span></label>
-                        <input type="file" id="webOrderSlipInput" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2.5 file:py-1.5 file:px-3.5 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-pink-100 file:text-pink-600 hover:file:bg-pink-200 cursor-pointer">
-                    </div>
-
-                    <div class="pt-2 border-t border-pink-100 space-y-2.5">
-                        <label class="block font-semibold text-sky-600">2. ช่องทางการส่งงานในไลน์ (ระบุอย่างใดอย่างหนึ่งหรือทั้งคู่) <span class="text-pink-500">*</span></label>
+                <!-- ฟอร์มกรอกบรีฟเว็บไซต์ -->
+                <div class="bg-white p-4 rounded-2xl border border-pink-200 text-left space-y-2.5 text-xs">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         <div>
-                            <label class="block text-[11px] text-slate-500 mb-1">ไอดีไลน์ (Line ID) สำหรับส่งงาน</label>
-                            <input type="text" id="webOrderLineId" placeholder="กรอก Line ID ของคุณ (เช่น @mumu123)" class="w-full px-3.5 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">ชื่อร้าน <span class="text-pink-500">*</span></label>
+                            <input type="text" id="webBriefStoreName" placeholder="เช่น Mumu Shop" class="w-full px-3 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
                         </div>
                         <div>
-                            <label class="block text-[11px] text-slate-500 mb-1">หรืออัปโหลดรูปภาพ QR Code ไลน์ของคุณ</label>
-                            <input type="file" id="webOrderLineQrInput" accept="image/*" onchange="previewWebOrderLineQr(event)" class="w-full text-xs text-slate-500 file:mr-2.5 file:py-1.5 file:px-3.5 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-sky-100 file:text-sky-600 hover:file:bg-sky-200 cursor-pointer">
-                            <div id="webOrderLineQrPreview" class="hidden mt-2 text-center bg-sky-50/60 p-2 rounded-xl border border-sky-200">
-                                <img id="webOrderLineQrImg" src="" alt="Line QR Preview" class="w-24 h-24 object-contain mx-auto rounded-lg border border-white shadow-2xs">
-                                <span class="text-[10px] text-sky-600 font-medium block mt-1">แนบคิวอาร์โค้ดไลน์เรียบร้อยแล้ว</span>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">สีเว็บ (โทนสีที่ต้องการ) <span class="text-pink-500">*</span></label>
+                            <input type="text" id="webBriefThemeColor" placeholder="เช่น ชมพู-ฟ้าพาสเทล, ดำ-ทอง" class="w-full px-3 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-600 mb-1">รายละเอียดเว็บไซต์ / เมนูที่ต้องการ <span class="text-pink-500">*</span></label>
+                        <textarea id="webBriefDetails" rows="2" placeholder="ระบุข้อความหน้าเว็บ สินค้า หรือรายละเอียดที่ต้องการให้ใส่ในเว็บ..." class="w-full px-3 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">บัญชีรับเงิน (เลขบัญชี / พร้อมเพย์)</label>
+                            <textarea id="webBriefBankAccount" rows="2" placeholder="ระบุธนาคาร เลขบัญชี และชื่อบัญชี..." class="w-full px-3 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">กฎร้าน (ข้อตกลง / เงื่อนไขร้าน)</label>
+                            <textarea id="webBriefStoreRules" rows="2" placeholder="ระบุกฎของร้าน หรือเงื่อนไขการรับประกัน..." class="w-full px-3 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- แนบรูปบัญชี & รูปกฎ -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                        <div class="bg-pink-50/50 p-2.5 rounded-xl border border-pink-200">
+                            <label class="block text-[11px] font-semibold text-pink-600 mb-1">รูปบัญชี / QR รับเงิน</label>
+                            <input type="file" id="webBriefAccountImgInput" accept="image/*" onchange="previewWebBriefImage(event, 'account')" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-full file:border-0 file:text-[11px] file:font-semibold file:bg-pink-100 file:text-pink-600 cursor-pointer">
+                            <div id="webBriefAccountImgPreview" class="hidden mt-1.5 text-center">
+                                <img id="webBriefAccountImgTag" src="" alt="รูปบัญชี" class="w-16 h-16 object-cover mx-auto rounded-lg border border-pink-300">
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-[11px] text-slate-500 mb-1">รายละเอียดเพิ่มเติม / ชื่อร้านที่ต้องการ (ถ้ามี)</label>
-                            <input type="text" id="webOrderNote" placeholder="เช่น ต้องการโทนสีชมพู-ฟ้า ชื่อร้าน..." class="w-full px-3.5 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+
+                        <div class="bg-sky-50/50 p-2.5 rounded-xl border border-sky-200">
+                            <label class="block text-[11px] font-semibold text-sky-600 mb-1">รูปกฎร้าน / โลโก้</label>
+                            <input type="file" id="webBriefRulesImgInput" accept="image/*" onchange="previewWebBriefImage(event, 'rules')" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-full file:border-0 file:text-[11px] file:font-semibold file:bg-sky-100 file:text-sky-600 cursor-pointer">
+                            <div id="webBriefRulesImgPreview" class="hidden mt-1.5 text-center">
+                                <img id="webBriefRulesImgTag" src="" alt="รูปกฎร้าน" class="w-16 h-16 object-cover mx-auto rounded-lg border border-sky-300">
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- แจ้งเตือนส่งรูปเพิ่มเติมทางไลน์ -->
+                    <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl text-[11px] text-emerald-700 space-y-1">
+                        <p class="font-bold flex items-center gap-1">
+                            <i data-lucide="image" class="w-3.5 h-3.5 shrink-0"></i>
+                            <span>ส่งรูปในไลน์ Line: @789kxbfn (ส่งเฉพาะรูปเท่านั้น)</span>
+                        </p>
+                        <p>กรอกบรีฟข้อความทั้งหมดในหน้านี้ได้เลยค่ะ <b class="underline">หากส่งรูปบัญชี หรือรูปกฎร้านเข้ามาในไลน์ กรุณาส่งเฉพาะรูปภาพเท่านั้นนะคะ</b></p>
                     </div>
                 </div>
 
                 <button id="btnSubmitWebOrder" onclick="submitWebsiteOrder(${product.id})" class="w-full btn-cute bg-pink-500 text-white py-2.5 rounded-2xl text-sm font-semibold cursor-pointer flex items-center justify-center gap-1.5">
-                    <i data-lucide="send" class="w-4 h-4"></i>
-                    <span>ยืนยันการชำระเงินและส่งข้อมูลเข้าไลน์</span>
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                    <span>ยืนยันส่งบรีฟ & สั่งซื้อ (${itemPrice.toFixed(2)} ฿)</span>
                 </button>
             `;
             document.getElementById('orderModal').classList.remove('hidden');
@@ -1563,55 +1617,79 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        function previewWebOrderLineQr(event) {
+        function previewWebBriefImage(event, type) {
             const file = event.target.files[0];
-            const previewBox = document.getElementById('webOrderLineQrPreview');
-            if (!file) {
-                pendingWebsiteQrDataUrl = '';
-                previewBox.classList.add('hidden');
-                return;
+            if (type === 'account') {
+                const previewBox = document.getElementById('webBriefAccountImgPreview');
+                if (!file) {
+                    pendingWebAccountImgDataUrl = '';
+                    previewBox.classList.add('hidden');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    pendingWebAccountImgDataUrl = e.target.result;
+                    document.getElementById('webBriefAccountImgTag').src = pendingWebAccountImgDataUrl;
+                    previewBox.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                const previewBox = document.getElementById('webBriefRulesImgPreview');
+                if (!file) {
+                    pendingWebRulesImgDataUrl = '';
+                    previewBox.classList.add('hidden');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    pendingWebRulesImgDataUrl = e.target.result;
+                    document.getElementById('webBriefRulesImgTag').src = pendingWebRulesImgDataUrl;
+                    previewBox.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
             }
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                pendingWebsiteQrDataUrl = e.target.result;
-                document.getElementById('webOrderLineQrImg').src = pendingWebsiteQrDataUrl;
-                previewBox.classList.remove('hidden');
-            };
-            reader.readAsDataURL(file);
         }
 
         async function submitWebsiteOrder(productId) {
             const product = productsData.find(p => p.id === productId);
             if (!product) return;
 
-            const slipFile = document.getElementById('webOrderSlipInput').files[0];
-            const lineId = document.getElementById('webOrderLineId').value.trim();
-            const note = document.getElementById('webOrderNote').value.trim();
+            const briefStoreName = document.getElementById('webBriefStoreName').value.trim();
+            const briefThemeColor = document.getElementById('webBriefThemeColor').value.trim();
+            const briefDetails = document.getElementById('webBriefDetails').value.trim();
+            const briefBankAccount = document.getElementById('webBriefBankAccount').value.trim();
+            const briefStoreRules = document.getElementById('webBriefStoreRules').value.trim();
             const submitBtn = document.getElementById('btnSubmitWebOrder');
 
-            if (!slipFile) {
-                showToast('กรุณาแนบสลิปโอนเงินก่อนยืนยันการสั่งซื้อนะคะ');
+            if (!briefStoreName || !briefThemeColor) {
+                showToast('กรุณากรอกชื่อร้าน และสีเว็บที่ต้องการก่อนกดสั่งซื้อนะคะ');
                 return;
             }
-            if (!lineId && !pendingWebsiteQrDataUrl) {
-                showToast('กรุณากรอกไอดีไลน์ หรืออัปโหลดรูปภาพ QR Code ไลน์เพื่อส่งงานนะคะ');
+
+            const currentCredit = Number(userBalance) || 0;
+            const itemPrice = Number(product.price) || 0;
+
+            if (currentCredit < itemPrice) {
+                showToast(`ยอดเงินไม่เพียงพอ (ขาดอีก ${(itemPrice - currentCredit).toFixed(2)} ฿) กรุณาเติมเงินก่อนนะคะ`);
+                closeModal('orderModal');
+                openTopupModal();
                 return;
             }
 
             submitBtn.disabled = true;
             submitBtn.classList.add('opacity-70', 'cursor-wait');
-            submitBtn.innerHTML = `<span>กำลังตรวจสอบสลิปและบันทึกออเดอร์...</span>`;
+            submitBtn.innerHTML = `<span>กำลังหักเครดิตและบันทึกบรีฟ...</span>`;
 
             try {
-                // ตรวจสลิปซ้ำจากไฟล์
-                const fileSignature = `WEB_${slipFile.name}_${slipFile.size}_${slipFile.lastModified}`;
-                if (usedSlipRefs.has(fileSignature)) {
-                    throw new Error('ตรวจพบสลิปซ้ำ! สลิปใบนี้ถูกใช้งานไปแล้วค่ะ');
+                // หักยอดเงินออกจากเครดิตของลูกค้าทันที
+                userBalance = Number((currentCredit - itemPrice).toFixed(2));
+                if (currentUser) {
+                    currentUser.balance = userBalance;
+                    const regEntry = registeredUsers.find(u => u.username === currentUser.username);
+                    if (regEntry) regEntry.balance = userBalance;
                 }
-                await new Promise(resolve => setTimeout(resolve, 1100));
-                usedSlipRefs.add(fileSignature);
+                document.getElementById('userBalance').innerText = `${userBalance.toFixed(2)} ฿`;
 
-                const transRef = `WEB${Math.floor(10000000 + Math.random() * 90000000)}`;
                 const orderId = `WEB-${Math.floor(10000 + Math.random() * 90000)}`;
                 const now = new Date();
                 const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -1619,65 +1697,65 @@
 
                 totalSold += 1;
 
-                // บันทึกประวัติสลิป
-                slipVerifyLogs.unshift({
-                    transRef: transRef,
-                    user: currentUser ? currentUser.username : 'Guest',
-                    amount: product.price,
-                    receiver: paymentConfig.accountName,
-                    date: dateStr,
-                    time: timeStr
-                });
-
-                // บันทึกออเดอร์เว็บไซต์พร้อม Line ID / QR Code ไลน์
+                // บันทึกออเดอร์เว็บไซต์พร้อมรายละเอียดบรีฟครบถ้วน
                 orderHistory.unshift({
                     id: orderId,
                     buyer: currentUser ? currentUser.username : 'Guest',
                     category: 'website',
                     productName: product.name,
-                    price: product.price,
-                    account: lineId ? `Line ID: ${lineId}` : 'ส่งงานผ่าน QR Code ไลน์',
-                    password: note || 'ชำระเงินแนบสลิปเรียบร้อย',
-                    lineId: lineId,
-                    lineQrUrl: pendingWebsiteQrDataUrl,
-                    note: note,
-                    transRef: transRef,
+                    price: itemPrice,
+                    account: `ร้าน: ${briefStoreName} | สี: ${briefThemeColor}`,
+                    password: briefDetails || '-',
+                    briefStoreName: briefStoreName,
+                    briefThemeColor: briefThemeColor,
+                    briefDetails: briefDetails,
+                    briefBankAccount: briefBankAccount,
+                    briefStoreRules: briefStoreRules,
+                    accountImgUrl: pendingWebAccountImgDataUrl,
+                    rulesImgUrl: pendingWebRulesImgDataUrl,
                     date: dateStr,
                     time: timeStr
                 });
 
                 renderProducts();
-                syncToGoogleSheet();
-                showToast('ชำระเงินและส่งข้อมูลช่องทางไลน์สำเร็จแล้วค่ะ');
+                if (isAdminAuthenticated) {
+                    renderAdminSummary();
+                    renderAdminOrders();
+                }
+                await syncToGoogleSheet();
+                showToast(`ส่งบรีฟและสั่งซื้อสำเร็จ หักเครดิต -${itemPrice.toFixed(2)} ฿ เรียบร้อยแล้วค่ะ`);
 
                 const content = document.getElementById('orderModalContent');
                 content.innerHTML = `
                     <div class="w-12 h-12 rounded-2xl bg-emerald-100 border border-emerald-200 text-emerald-600 flex items-center justify-center mx-auto font-bold text-lg">
                         OK
                     </div>
-                    <h3 class="font-cute text-xl font-bold text-slate-800">สั่งซื้อเว็บไซต์สำเร็จแล้ว!</h3>
-                    <p class="text-xs text-slate-500">เลขที่ออเดอร์: <b class="text-sky-600">${orderId}</b> (Ref: ${transRef})</p>
-                    <div class="bg-white p-4 rounded-2xl border border-pink-200 text-left space-y-2 text-xs shadow-2xs">
-                        <p><span class="text-slate-500">แพ็กเกจ:</span> <b class="text-slate-800">${product.name} (${product.price}.00 ฿)</b></p>
-                        ${lineId ? `<p><span class="text-slate-500">ไอดีไลน์รับงาน:</span> <span class="text-pink-600 font-bold select-all">${lineId}</span></p>` : ''}
-                        ${note ? `<p><span class="text-slate-500">รายละเอียดเพิ่มเติม:</span> <span class="text-slate-700">${note}</span></p>` : ''}
-                        ${pendingWebsiteQrDataUrl ? `
-                            <div class="pt-2 border-t border-pink-100 text-center">
-                                <p class="text-slate-500 mb-1.5">คิวอาร์โค้ดไลน์สำหรับส่งงานของคุณ:</p>
-                                <img src="${pendingWebsiteQrDataUrl}" alt="Customer Line QR" class="w-28 h-28 object-contain mx-auto rounded-xl border border-sky-200">
+                    <h3 class="font-cute text-xl font-bold text-slate-800">ส่งบรีฟสั่งทำเว็บไซต์สำเร็จ!</h3>
+                    <p class="text-xs text-slate-500">เลขที่ออเดอร์: <b class="text-sky-600">${orderId}</b> • คงเหลือ: <b class="text-pink-600">${userBalance.toFixed(2)} ฿</b></p>
+                    <div class="bg-white p-4 rounded-2xl border border-pink-200 text-left space-y-1.5 text-xs shadow-2xs">
+                        <p><span class="text-slate-500">แพ็กเกจ:</span> <b class="text-slate-800">${product.name} (-${itemPrice}.00 ฿)</b></p>
+                        <p><span class="text-slate-500">ชื่อร้าน:</span> <b class="text-pink-600">${briefStoreName}</b></p>
+                        <p><span class="text-slate-500">สีเว็บ:</span> <b class="text-sky-600">${briefThemeColor}</b></p>
+                        ${briefDetails ? `<p><span class="text-slate-500">รายละเอียด:</span> <span class="text-slate-700">${briefDetails}</span></p>` : ''}
+                        ${briefBankAccount ? `<p><span class="text-slate-500">บัญชีรับเงิน:</span> <span class="text-slate-700">${briefBankAccount}</span></p>` : ''}
+                        ${briefStoreRules ? `<p><span class="text-slate-500">กฎร้าน:</span> <span class="text-slate-700">${briefStoreRules}</span></p>` : ''}
+                        ${(pendingWebAccountImgDataUrl || pendingWebRulesImgDataUrl) ? `
+                            <div class="pt-2 border-t border-pink-100 flex items-center justify-center gap-4">
+                                ${pendingWebAccountImgDataUrl ? `<div class="text-center"><img src="${pendingWebAccountImgDataUrl}" class="w-16 h-16 object-cover rounded-lg border border-pink-200 mx-auto"><span class="text-[10px] text-slate-500">รูปบัญชี</span></div>` : ''}
+                                ${pendingWebRulesImgDataUrl ? `<div class="text-center"><img src="${pendingWebRulesImgDataUrl}" class="w-16 h-16 object-cover rounded-lg border border-sky-200 mx-auto"><span class="text-[10px] text-slate-500">รูปกฎร้าน</span></div>` : ''}
                             </div>
                         ` : ''}
-                        <div class="pt-2 border-t border-pink-100 text-sky-600 font-medium">
-                            แอดมินได้รับสลิปและช่องทางไลน์ของคุณเรียบร้อยแล้ว จะรีบติดต่อส่งงานให้ทางไลน์ทันทีค่ะ
+                        <div class="pt-2 border-t border-pink-100 bg-emerald-50/80 p-2.5 rounded-xl text-emerald-700 font-medium">
+                            แอดมินได้รับบรีฟในระบบเรียบร้อยแล้วค่ะ หากส่งรูปบัญชีหรือรูปกฎร้านในไลน์ <b>@789kxbfn</b> กรุณาส่งเฉพาะรูปภาพเท่านั้นนะคะ
                         </div>
                     </div>
                     <a href="https://lin.ee/83goAf5" target="_blank" rel="noopener noreferrer" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-2xl text-sm font-semibold cursor-pointer flex items-center justify-center gap-1.5 transition">
-                        <i data-lucide="message-circle" class="w-4 h-4"></i>
-                        <span>ทักแชทแอดมิน Line: @789kxbfn</span>
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>ส่งรูปในไลน์ @789kxbfn (ส่งเฉพาะรูปเท่านั้น)</span>
                     </a>
                     <button onclick="copySingleOrderDetails('${orderId}')" class="w-full btn-cute-blue bg-sky-500 text-white py-2.5 rounded-2xl text-sm font-medium cursor-pointer flex items-center justify-center gap-1.5">
                         <i data-lucide="copy" class="w-4 h-4"></i>
-                        <span>คัดลอกทั้งหมด</span>
+                        <span>คัดลอกบรีฟทั้งหมด</span>
                     </button>
                     <button onclick="closeModal('orderModal')" class="w-full btn-cute bg-pink-500 text-white py-2.5 rounded-2xl text-sm font-medium cursor-pointer">
                         เรียบร้อย
@@ -1688,7 +1766,7 @@
                 showToast(err.message);
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('opacity-70', 'cursor-wait');
-                submitBtn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i><span>ยืนยันการชำระเงินและส่งข้อมูลเข้าไลน์</span>`;
+                submitBtn.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i><span>ยืนยันส่งบรีฟ & สั่งซื้อ (${itemPrice.toFixed(2)} ฿)</span>`;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
         }
@@ -2056,10 +2134,12 @@
                 }
 
                 // เติมเครดิตเข้าบัญชีสำเร็จ
-                const creditedAmount = verifyData.amount;
-                userBalance += creditedAmount;
+                const creditedAmount = Number(verifyData.amount) || 0;
+                userBalance = Number(((Number(userBalance) || 0) + creditedAmount).toFixed(2));
                 if (currentUser) {
                     currentUser.balance = userBalance;
+                    const regEntry = registeredUsers.find(u => u.username === currentUser.username);
+                    if (regEntry) regEntry.balance = userBalance;
                 }
                 document.getElementById('userBalance').innerText = `${userBalance.toFixed(2)} ฿`;
 
@@ -2081,7 +2161,7 @@
                 `;
 
                 fileInput.value = '';
-                syncToGoogleSheet();
+                await syncToGoogleSheet();
                 showToast(`ตรวจสอบสลิปสำเร็จ เติมเงิน +${creditedAmount.toFixed(2)} ฿ เรียบร้อยแล้วค่ะ`);
 
                 setTimeout(() => {
@@ -2160,10 +2240,24 @@
             }
 
             currentUser = foundUser;
-            userBalance = foundUser.balance;
+            userBalance = Number(calculateNetUserBalance(foundUser.username, foundUser.balance).toFixed(2));
+            currentUser.balance = userBalance;
             updateAuthUI();
             closeModal('authModal');
             showToast(`เข้าสู่ระบบสำเร็จ ยินดีต้อนรับคุณ ${foundUser.username}`);
+        }
+
+        // คำนวณยอดเงินคงเหลือสุทธิจริง (ยอดเติมเงินรวม - ยอดสั่งซื้อรวมทั้งหมด รวมถึงหมวดเว็บไซต์)
+        function calculateNetUserBalance(username, fallbackBalance = 0) {
+            if (!username) return Number(fallbackBalance) || 0;
+            const userTopups = slipVerifyLogs.filter(t => t.user === username);
+            const userOrders = orderHistory.filter(o => o.buyer === username);
+            if (userTopups.length > 0 || userOrders.length > 0) {
+                const totalIn = userTopups.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+                const totalOut = userOrders.reduce((sum, o) => sum + (Number(o.price) || 0), 0);
+                return Math.max(0, Number((totalIn - totalOut).toFixed(2)));
+            }
+            return Number(fallbackBalance) || 0;
         }
 
         function logoutUser() {
@@ -2267,12 +2361,14 @@
         function formatOrderCopyText(ord) {
             if (ord.category === 'website') {
                 let webLines = [
-                    `แพ็กเกจเว็บไซต์: ${ord.productName} (${ord.id})`,
+                    `บรีฟสั่งทำเว็บไซต์: ${ord.productName} (${ord.id})`,
                     `ยอดชำระ: ${ord.price}.00 ฿`
                 ];
-                if (ord.lineId) webLines.push(`Line ID รับงาน: ${ord.lineId}`);
-                if (ord.lineQrUrl) webLines.push(`QR Code ไลน์: แนบรูปภาพแล้ว`);
-                if (ord.note) webLines.push(`รายละเอียดเพิ่มเติม: ${ord.note}`);
+                if (ord.briefStoreName) webLines.push(`ชื่อร้าน: ${ord.briefStoreName}`);
+                if (ord.briefThemeColor) webLines.push(`สีเว็บ: ${ord.briefThemeColor}`);
+                if (ord.briefDetails) webLines.push(`รายละเอียด: ${ord.briefDetails}`);
+                if (ord.briefBankAccount) webLines.push(`บัญชีรับเงิน: ${ord.briefBankAccount}`);
+                if (ord.briefStoreRules) webLines.push(`กฎร้าน: ${ord.briefStoreRules}`);
                 return webLines.join('\n');
             }
             let lines = [
@@ -2339,9 +2435,11 @@
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-slate-600">
                             ${ord.category === 'website' ? `
-                                <p><span class="text-slate-400">ช่องทางส่งงาน:</span> <span class="text-pink-600 font-semibold select-all">${ord.lineId ? `Line ID: ${ord.lineId}` : 'แนบ QR Code ไลน์แล้ว'}</span></p>
-                                <p><span class="text-slate-400">สถานะ:</span> <span class="text-emerald-600 font-semibold">ชำระเงินแนบสลิปแล้ว</span></p>
-                                ${ord.note ? `<p class="sm:col-span-2"><span class="text-slate-400">รายละเอียด:</span> <span class="text-slate-700">${ord.note}</span></p>` : ''}
+                                <p><span class="text-slate-400">ชื่อร้าน:</span> <span class="text-pink-600 font-semibold">${ord.briefStoreName || ord.account}</span></p>
+                                <p><span class="text-slate-400">สีเว็บ:</span> <span class="text-sky-600 font-semibold">${ord.briefThemeColor || '-'}</span></p>
+                                ${ord.briefDetails ? `<p class="sm:col-span-2"><span class="text-slate-400">รายละเอียด:</span> <span class="text-slate-700">${ord.briefDetails}</span></p>` : ''}
+                                ${ord.briefBankAccount ? `<p><span class="text-slate-400">บัญชีรับเงิน:</span> <span class="text-slate-700">${ord.briefBankAccount}</span></p>` : ''}
+                                ${ord.briefStoreRules ? `<p><span class="text-slate-400">กฎร้าน:</span> <span class="text-slate-700">${ord.briefStoreRules}</span></p>` : ''}
                             ` : `
                                 <p><span class="text-slate-400">Email/ID:</span> <span class="font-mono text-pink-600 font-semibold select-all">${ord.account}</span></p>
                                 <p><span class="text-slate-400">Password:</span> <span class="font-mono text-sky-600 font-semibold select-all">${ord.password}</span></p>
@@ -2697,19 +2795,29 @@
                             <span class="text-[11px] text-slate-400 ml-1">(${ord.buyer})</span>
                         </div>
                         ${ord.category === 'website' ? `
-                            <p class="text-[11px] text-pink-600 font-semibold">ช่องทางส่งงาน: ${ord.lineId ? `Line ID: ${ord.lineId}` : 'ลูกค้าแนบ QR Code ไลน์'} ${ord.note ? `• รายละเอียด: ${ord.note}` : ''}</p>
-                            <p class="text-[10px] text-slate-400">ชำระเงินแนบสลิปแล้ว • เวลา ${ord.time} น.</p>
+                            <p class="text-[11px] text-pink-600 font-semibold">บรีฟ: ชื่อร้าน "${ord.briefStoreName || '-'}" • สี "${ord.briefThemeColor || '-'}"</p>
+                            ${ord.briefDetails ? `<p class="text-[11px] text-slate-600">รายละเอียด: ${ord.briefDetails}</p>` : ''}
+                            ${ord.briefBankAccount ? `<p class="text-[11px] text-slate-600">บัญชี: ${ord.briefBankAccount}</p>` : ''}
+                            ${ord.briefStoreRules ? `<p class="text-[11px] text-slate-600">กฎร้าน: ${ord.briefStoreRules}</p>` : ''}
+                            <p class="text-[10px] text-slate-400">หักเครดิตสำเร็จ • เวลา ${ord.time} น.</p>
                         ` : `
                             <p class="text-[11px] text-slate-500">บัญชีที่ส่ง: ${ord.account} • เวลา ${ord.time} น.</p>
                             ${ord.readMailUrl ? `<a href="${ord.readMailUrl}" target="_blank" class="text-[11px] text-sky-600 underline truncate block">${ord.readMailUrl}</a>` : ''}
                         `}
                     </div>
-                    ${ord.lineQrUrl ? `
-                        <a href="${ord.lineQrUrl}" target="_blank" title="คลิกเพื่อดูรูป QR Code ไลน์ลูกค้า" class="shrink-0">
-                            <img src="${ord.lineQrUrl}" alt="Line QR" class="w-12 h-12 object-contain rounded-xl border border-pink-200 bg-white p-0.5">
-                        </a>
-                    ` : ''}
-                    <span class="font-cute font-bold text-pink-500 shrink-0">+${ord.price}.00 ฿</span>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        ${ord.accountImgUrl ? `
+                            <a href="${ord.accountImgUrl}" target="_blank" title="คลิกดูรูปบัญชี">
+                                <img src="${ord.accountImgUrl}" alt="รูปบัญชี" class="w-11 h-11 object-cover rounded-xl border border-pink-200 bg-white">
+                            </a>
+                        ` : ''}
+                        ${ord.rulesImgUrl ? `
+                            <a href="${ord.rulesImgUrl}" target="_blank" title="คลิกดูรูปกฎร้าน">
+                                <img src="${ord.rulesImgUrl}" alt="รูปกฎร้าน" class="w-11 h-11 object-cover rounded-xl border border-sky-200 bg-white">
+                            </a>
+                        ` : ''}
+                        <span class="font-cute font-bold text-pink-500 ml-1">+${ord.price}.00 ฿</span>
+                    </div>
                 </div>
             `).join('');
         }
@@ -2862,6 +2970,7 @@
         }
 
         async function syncToGoogleSheet(notifySuccess = false) {
+            lastLocalMutationAt = Date.now();
             if (!googleScriptWebAppUrl) return;
             updateGoogleSheetBadge('กำลังบันทึกลงชีต...', true);
             try {
@@ -2899,7 +3008,12 @@
                             products: sanitizedProducts,
                             mailAccounts: mailAccountsPool,
                             users: registeredUsers,
-                            orders: orderHistory.map(o => ({ ...o, lineQrUrl: (o.lineQrUrl && o.lineQrUrl.length > 40000) ? '' : o.lineQrUrl })),
+                            orders: orderHistory.map(o => ({
+                                ...o,
+                                lineQrUrl: (o.lineQrUrl && o.lineQrUrl.length > 40000) ? '' : o.lineQrUrl,
+                                accountImgUrl: (o.accountImgUrl && o.accountImgUrl.length > 40000) ? '' : o.accountImgUrl,
+                                rulesImgUrl: (o.rulesImgUrl && o.rulesImgUrl.length > 40000) ? '' : o.rulesImgUrl
+                            })),
                             topupLogs: slipVerifyLogs,
                             reviews: reviewsData,
                             settings: [storeSettingsObj]
@@ -2957,8 +3071,16 @@
                         if (currentUser) {
                             const updatedMe = registeredUsers.find(u => u.username === currentUser.username);
                             if (updatedMe) {
-                                currentUser.balance = updatedMe.balance;
-                                userBalance = updatedMe.balance;
+                                const sheetBalance = Number(updatedMe.balance) || 0;
+                                const localBalance = Number(userBalance) || 0;
+                                // ป้องกันค่าเก่าในชีตมาลดเครดิตที่เพิ่งเติมสำเร็จในเครื่อง
+                                if (sheetBalance >= localBalance || (Date.now() - lastLocalMutationAt > 15000)) {
+                                    currentUser.balance = sheetBalance;
+                                    userBalance = sheetBalance;
+                                } else {
+                                    updatedMe.balance = localBalance;
+                                    currentUser.balance = localBalance;
+                                }
                                 const balEl = document.getElementById('userBalance');
                                 if (balEl) balEl.innerText = `${userBalance.toFixed(2)} ฿`;
                             }
@@ -2968,6 +3090,27 @@
                     if (Array.isArray(d.topupLogs)) {
                         slipVerifyLogs = d.topupLogs;
                         d.topupLogs.forEach(t => { if (t.transRef) usedSlipRefs.add(t.transRef); });
+                    }
+                    if (Array.isArray(d.users)) {
+                        registeredUsers = d.users.map(u => ({
+                            ...u,
+                            balance: calculateNetUserBalance(u.username, u.balance)
+                        }));
+                        if (currentUser) {
+                            const updatedMe = registeredUsers.find(u => u.username === currentUser.username);
+                            if (updatedMe) {
+                                const netBalance = calculateNetUserBalance(currentUser.username, updatedMe.balance);
+                                if (Date.now() - lastLocalMutationAt > 15000) {
+                                    currentUser.balance = netBalance;
+                                    userBalance = netBalance;
+                                } else {
+                                    updatedMe.balance = userBalance;
+                                    currentUser.balance = userBalance;
+                                }
+                                const balEl = document.getElementById('userBalance');
+                                if (balEl) balEl.innerText = `${userBalance.toFixed(2)} ฿`;
+                            }
+                        }
                     }
                     if (Array.isArray(d.reviews) && d.reviews.length > 0) reviewsData = d.reviews;
                     if (Array.isArray(d.settings) && d.settings.length > 0) {
@@ -3023,3 +3166,8 @@
     </script>
 </body>
 </html>
+```
+
+อัปเดตหน้าสั่งซื้อแพ็กเกจเว็บไซต์เรียบร้อยแล้วครับ:
+* **แบบฟอร์มบรีฟครบทุกช่อง**: ลูกค้าสามารถกรอก **ชื่อร้าน**, **สีเว็บ (โทนสีที่ต้องการ)**, **รายละเอียดเว็บไซต์**, **ข้อมูลบัญชีรับเงิน / กฎร้าน** รวมถึงแนบ **รูปบัญชี** และ **รูปกฎร้าน** ได้ทันทีก่อนกดสั่งซื้อ
+* **แจ้งเตือนส่งรูปทางไลน์**: แสดงข้อความชัดเจนทั้งในหน้าบรีฟและหน้าสรุปคำสั่งซื้อว่าหากต้องการส่งรูปภาพเพิ่มเติมในไลน์ `@789kxbfn` ให้ **ส่งเฉพาะรูปภาพเท่านั้น** พร้อมปุ่มคัดลอกบรีฟทั้งหมดและดูข้อมูลบรีฟในหน้าหลังบ้านได้ครบถ้วนครับ
