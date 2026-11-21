@@ -1314,22 +1314,290 @@
                         <p class="text-xs text-slate-500 leading-relaxed mb-4">${item.desc}</p>
                     </div>
 
-                    <div class="pt-3 border-t border-dashed border-pink-200 flex items-center justify-between gap-2">
-                        <div>
-                            <span class="text-[11px] text-slate-400 block">ราคา</span>
-                            <span class="font-cute text-xl font-bold text-pink-500">${item.price}.00 ฿</span>
-                        </div>
+                    <div class="pt-3 border-t border-dashed border-pink-200 space-y-2.5">
+                        ${!isWebsite && !isOutOfStock ? `
+                            <div class="flex items-center justify-between bg-pink-50/70 px-3 py-1.5 rounded-xl border border-pink-200/80">
+                                <span class="text-[11px] text-slate-600 font-medium">จำนวนที่สั่งซื้อ:</span>
+                                <div class="flex items-center gap-1.5">
+                                    <button type="button" onclick="changeCardQty(${item.id}, -1)" class="w-7 h-7 rounded-lg bg-white hover:bg-pink-100 text-pink-600 border border-pink-200 font-bold flex items-center justify-center cursor-pointer transition shadow-2xs">-</button>
+                                    <input type="number" id="qty-input-${item.id}" value="1" min="1" max="${item.stock}" onchange="validateCardQty(${item.id})" class="w-11 text-center text-xs font-bold text-slate-800 bg-white border border-pink-200 rounded-lg py-1 focus:outline-none focus:border-sky-400">
+                                    <button type="button" onclick="changeCardQty(${item.id}, 1)" class="w-7 h-7 rounded-lg bg-white hover:bg-sky-100 text-sky-600 border border-sky-200 font-bold flex items-center justify-center cursor-pointer transition shadow-2xs">+</button>
+                                </div>
+                            </div>
+                        ` : ''}
 
-                        <button onclick="buyProduct(${item.id})" ${isOutOfStock ? 'disabled' : ''}
-                            class="${isOutOfStock
-                                ? 'bg-slate-100 text-slate-400 cursor-not-allowed px-5 py-2.5 rounded-2xl text-sm font-medium'
-                                : 'btn-cute bg-pink-500 text-white px-5 py-2.5 rounded-2xl text-sm font-medium cursor-pointer'}">
-                            ${isOutOfStock ? 'สินค้าหมด' : 'สั่งซื้อเลย'}
-                        </button>
+                        <div class="flex items-center justify-between gap-2">
+                            <div>
+                                <span class="text-[11px] text-slate-400 block">ราคารวม</span>
+                                <span id="card-total-price-${item.id}" class="font-cute text-xl font-bold text-pink-500">${Number(item.price).toFixed(2)} ฿</span>
+                            </div>
+
+                            <button onclick="buyProduct(${item.id})" ${isOutOfStock ? 'disabled' : ''}
+                                class="${isOutOfStock
+                                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed px-5 py-2.5 rounded-2xl text-sm font-medium'
+                                    : 'btn-cute bg-pink-500 text-white px-5 py-2.5 rounded-2xl text-sm font-medium cursor-pointer'}">
+                                ${isOutOfStock ? 'สินค้าหมด' : 'สั่งซื้อเลย'}
+                            </button>
+                        </div>
                     </div>
                 `;
                 grid.appendChild(card);
             });
+        }
+
+        // ปรับจำนวนสั่งซื้อสินค้า (- / +) บนการ์ดสินค้า
+        function changeCardQty(id, delta) {
+            const product = productsData.find(p => p.id === id);
+            const inputEl = document.getElementById(`qty-input-${id}`);
+            if (!product || !inputEl) return;
+
+            const maxStock = Math.max(1, Number(product.stock) || 1);
+            let currentVal = parseInt(inputEl.value, 10) || 1;
+            let nextVal = currentVal + delta;
+
+            if (nextVal < 1) nextVal = 1;
+            if (nextVal > maxStock) {
+                nextVal = maxStock;
+                showToast(`สินค้านี้มีสต็อกพร้อมส่งสูงสุด ${maxStock} ชิ้นค่ะ`);
+            }
+
+            inputEl.value = nextVal;
+            const totalEl = document.getElementById(`card-total-price-${id}`);
+            if (totalEl) {
+                totalEl.innerText = `${(Number(product.price) * nextVal).toFixed(2)} ฿`;
+            }
+        }
+
+        function validateCardQty(id) {
+            const product = productsData.find(p => p.id === id);
+            const inputEl = document.getElementById(`qty-input-${id}`);
+            if (!product || !inputEl) return;
+
+            const maxStock = Math.max(1, Number(product.stock) || 1);
+            let val = parseInt(inputEl.value, 10) || 1;
+            if (val < 1) val = 1;
+            if (val > maxStock) {
+                val = maxStock;
+                showToast(`สินค้านี้มีสต็อกพร้อมส่งสูงสุด ${maxStock} ชิ้นค่ะ`);
+            }
+            inputEl.value = val;
+            const totalEl = document.getElementById(`card-total-price-${id}`);
+            if (totalEl) {
+                totalEl.innerText = `${(Number(product.price) * val).toFixed(2)} ฿`;
+            }
+        }
+
+        // กรองหมวดหมู่สินค้า
+        function filterCategory(category, btnElement) {
+            currentFilter = category;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-pink-500', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-slate-600', 'border', 'border-pink-200');
+            });
+            if (btnElement) {
+                btnElement.classList.remove('bg-white', 'text-slate-600', 'border', 'border-pink-200');
+                btnElement.classList.add('bg-pink-500', 'text-white', 'shadow-sm');
+            }
+            renderProducts();
+        }
+
+        // ซื้อสินค้า (รองรับการสั่งซื้อหลายชิ้นพร้อมกันตามจำนวน - / +)
+        async function buyProduct(id) {
+            if (!currentUser) {
+                showToast('กรุณาสมัครสมาชิกหรือเข้าสู่ระบบก่อนสั่งซื้อสินค้านะคะ');
+                openAuthModal('register');
+                return;
+            }
+
+            // อ่านจำนวนที่ลูกค้าเลือกไว้ก่อนซิงค์
+            const qtyInputEl = document.getElementById(`qty-input-${id}`);
+            const requestedQty = qtyInputEl ? Math.max(1, parseInt(qtyInputEl.value, 10) || 1) : 1;
+
+            // ซิงค์ข้อมูลสต็อกล่าสุดจาก Google Sheets เฉพาะเมื่อไม่มีการเปลี่ยนแปลงในเครื่องช่วง 8 วินาทีล่าสุด (ป้องกันค่าชีตเก่าทับยอดเติมเงิน)
+            if (googleScriptWebAppUrl && (Date.now() - lastLocalMutationAt > 8000)) {
+                try {
+                    await syncFromGoogleSheet(false);
+                } catch (e) {}
+            }
+
+            const product = productsData.find(p => p.id === id);
+            if (!product) return;
+
+            // หากเป็นสินค้าหมวดหมู่เว็บไซต์ เปิดหน้ากรอกบรีฟเว็บไซต์ + แนบรูปบัญชี/รูปกฎ + ส่งรูปทางไลน์
+            if (product.category === 'website') {
+                openWebsiteOrderModal(product);
+                return;
+            }
+
+            // ตรวจสอบรหัสที่พร้อมส่งในคลังของสินค้านั้นๆ เพื่อป้องกันการขายรหัสซ้ำ
+            const availablePoolForProduct = mailAccountsPool.filter(m => String(m.productId) === String(product.id) && m.status === 'available');
+            const effectiveStock = availablePoolForProduct.length > 0 ? availablePoolForProduct.length : product.stock;
+
+            if (effectiveStock <= 0) {
+                product.stock = 0;
+                renderProducts();
+                showToast('ขออภัยค่ะ สินค้าชิ้นนี้สต็อกหมดแล้ว');
+                return;
+            }
+
+            if (requestedQty > effectiveStock) {
+                showToast(`สต็อกพร้อมส่งคงเหลือ ${effectiveStock} ชิ้น กรุณาลดจำนวนสั่งซื้อนะคะ`);
+                return;
+            }
+
+            const currentCredit = Number(userBalance) || 0;
+            const unitPrice = Number(product.price) || 0;
+            const totalPrice = Number((unitPrice * requestedQty).toFixed(2));
+
+            if (currentCredit < totalPrice) {
+                showToast(`ยอดเงินไม่เพียงพอสำหรับ ${requestedQty} ชิ้น (ขาดอีก ${(totalPrice - currentCredit).toFixed(2)} ฿) กรุณาเติมเงินก่อนนะคะ`);
+                openTopupModal();
+                return;
+            }
+
+            userBalance = Number((currentCredit - totalPrice).toFixed(2));
+            if (currentUser) {
+                currentUser.balance = userBalance;
+                const regEntry = registeredUsers.find(u => u.username === currentUser.username);
+                if (regEntry) regEntry.balance = userBalance;
+            }
+            document.getElementById('userBalance').innerText = `${userBalance.toFixed(2)} ฿`;
+
+            const now = new Date();
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const dateStr = now.toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' });
+            const createdOrderIds = [];
+            const purchasedItemsList = [];
+
+            // วนลูปตัดสต็อกและออกออเดอร์ครบตามจำนวนชิ้นที่สั่งซื้อ
+            for (let i = 0; i < requestedQty; i++) {
+                const matchedMailAcc = availablePoolForProduct[i];
+                let accountEmail = `mumu_${Math.floor(1000 + Math.random() * 9000)}@hotmail.com`;
+                let accountPass = `Mumu#${Math.floor(100000 + Math.random() * 900000)}`;
+                let twoFA = '';
+                let accountLink = '';
+                let mailCode = '';
+                let readMailUrl = '';
+
+                if (matchedMailAcc) {
+                    matchedMailAcc.status = 'sold';
+                    matchedMailAcc.soldTo = currentUser ? currentUser.username : 'Guest';
+                    matchedMailAcc.soldAt = new Date().toISOString();
+                    accountEmail = matchedMailAcc.email;
+                    accountPass = matchedMailAcc.password;
+                    twoFA = matchedMailAcc.twoFA || '';
+                    accountLink = matchedMailAcc.accountLink || '';
+                    mailCode = matchedMailAcc.mailCode || '';
+                    readMailUrl = matchedMailAcc.readMailUrl || '';
+                }
+
+                const orderId = `ORD-${Math.floor(10000 + Math.random() * 90000)}-${i + 1}`;
+                createdOrderIds.push(orderId);
+
+                const orderObj = {
+                    id: orderId,
+                    buyer: currentUser ? currentUser.username : 'Guest',
+                    category: product.category,
+                    productName: product.name,
+                    price: unitPrice,
+                    account: accountEmail,
+                    password: accountPass,
+                    twoFA: twoFA,
+                    mailCode: mailCode,
+                    accountLink: accountLink,
+                    readMailUrl: readMailUrl,
+                    date: dateStr,
+                    time: timeStr
+                };
+                orderHistory.unshift(orderObj);
+                purchasedItemsList.push(orderObj);
+            }
+
+            // อัปเดตสต็อกคงเหลือตามจริง
+            if (availablePoolForProduct.length > 0) {
+                const remainingCount = mailAccountsPool.filter(m => String(m.productId) === String(product.id) && m.status === 'available').length;
+                product.stock = remainingCount;
+            } else {
+                product.stock = Math.max(0, product.stock - requestedQty);
+            }
+
+            totalSold += requestedQty;
+            const totalSoldEl = document.getElementById('totalSoldDisplay');
+            if (totalSoldEl) {
+                totalSoldEl.innerHTML = `${totalSold.toLocaleString()} <span class="text-xs font-normal text-slate-500">ครั้ง</span>`;
+            }
+
+            const batchIdsJson = JSON.stringify(createdOrderIds).replace(/"/g, '&quot;');
+            const itemsHtml = purchasedItemsList.map((item, idx) => `
+                <div class="bg-white p-3.5 rounded-2xl border border-pink-200 text-left space-y-1.5 text-xs shadow-2xs">
+                    <div class="flex items-center justify-between border-b border-pink-100 pb-1">
+                        <span class="font-bold text-pink-600">รายการที่ ${idx + 1} (${item.id})</span>
+                        <span class="font-semibold text-sky-600">${item.price.toFixed(2)} ฿</span>
+                    </div>
+                    <p><span class="text-slate-500">Email / User:</span> <span class="text-pink-600 font-mono select-all font-semibold">${item.account}</span></p>
+                    <p><span class="text-slate-500">Password:</span> <span class="text-sky-600 font-mono select-all font-semibold">${item.password}</span></p>
+                    ${item.twoFA ? `<p><span class="text-slate-500">2FA Code:</span> <span class="text-amber-600 font-mono select-all font-semibold">${item.twoFA}</span></p>` : ''}
+                    ${item.mailCode ? `<p><span class="text-slate-500">โค้ดอ่านเมล:</span> <span class="text-amber-600 font-mono select-all font-semibold">${item.mailCode}</span></p>` : ''}
+                    ${item.accountLink ? `
+                        <div class="pt-1.5">
+                            <a href="${item.accountLink}" target="_blank" class="block w-full text-center bg-pink-500 hover:bg-pink-600 text-white font-semibold py-1.5 px-3 rounded-xl transition">
+                                เปิดลิงก์บัญชี #${idx + 1}
+                            </a>
+                        </div>
+                    ` : ''}
+                    ${item.readMailUrl ? `
+                        <div class="pt-1.5">
+                            <a href="${item.readMailUrl}" target="_blank" class="block w-full text-center bg-sky-500 hover:bg-sky-600 text-white font-semibold py-1.5 px-3 rounded-xl transition">
+                                เปิดกล่องอ่านเมล #${idx + 1}
+                            </a>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+
+            // แสดงข้อมูลบัญชีและลิงก์หลังซื้อสำเร็จ
+            const content = document.getElementById('orderModalContent');
+            content.innerHTML = `
+                <div class="w-12 h-12 rounded-2xl bg-sky-100 border border-sky-200 text-sky-600 flex items-center justify-center mx-auto font-bold text-lg">
+                    OK
+                </div>
+                <h3 class="font-cute text-xl font-bold text-slate-800">สั่งซื้อสำเร็จ (${requestedQty} ชิ้น)</h3>
+                <p class="text-xs text-slate-500">สินค้า: <b class="text-slate-800">${product.name}</b> • รวม <b class="text-pink-600">${totalPrice.toFixed(2)} ฿</b></p>
+                <div class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+                    ${itemsHtml}
+                </div>
+                <button onclick="copyBatchOrderDetails(${batchIdsJson})" class="w-full btn-cute-blue bg-sky-500 text-white py-2.5 rounded-2xl text-sm font-medium cursor-pointer flex items-center justify-center gap-1.5">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                    <span>คัดลอกทั้งหมด (${requestedQty} รายการ)</span>
+                </button>
+                <a href="https://lin.ee/83goAf5" target="_blank" rel="noopener noreferrer" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-2xl text-xs font-semibold cursor-pointer flex items-center justify-center gap-1.5 transition">
+                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                    <span>ติดต่อแอดมิน Line: @789kxbfn</span>
+                </a>
+                <button onclick="closeModal('orderModal')" class="w-full btn-cute bg-pink-500 text-white py-2.5 rounded-2xl text-sm font-medium cursor-pointer">
+                    เรียบร้อย
+                </button>
+            `;
+            document.getElementById('orderModal').classList.remove('hidden');
+            document.getElementById('orderModal').classList.add('flex');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            renderProducts();
+            if (isAdminAuthenticated) {
+                renderAdminSummary();
+                renderAdminProducts();
+                renderAdminMailAccounts();
+                renderAdminOrders();
+            }
+            await syncToGoogleSheet();
+            showToast(`สั่งซื้อ ${product.name} จำนวน ${requestedQty} ชิ้น สำเร็จ! ยอดคงเหลือ ${userBalance.toFixed(2)} ฿`);
+        }
+
+        function copyBatchOrderDetails(orderIds) {
+            if (!Array.isArray(orderIds) || orderIds.length === 0) return;
+            const matchedOrders = orderIds.map(oid => orderHistory.find(o => o.id === oid)).filter(Boolean);
+            if (matchedOrders.length === 0) return;
+            const text = matchedOrders.map((ord, idx) => `--- รายการที่ ${idx + 1} ---\n${formatOrderCopyText(ord)}`).join('\n\n');
+            copyTextSafe(text, `คัดลอกข้อมูลบัญชีทั้งหมด ${matchedOrders.length} รายการเรียบร้อยแล้วค่ะ`);
         }
 
         // กรองหมวดหมู่สินค้า
