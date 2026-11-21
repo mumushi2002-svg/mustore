@@ -99,7 +99,7 @@
 
     <!-- แถบประกาศด้านบน -->
     <div id="topAnnouncementBar" class="bg-gradient-to-r from-pink-400 via-pink-500 to-sky-400 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium shadow-sm">
-        ยินดีต้อนรับสู่ Mumu Store ระบบอัตโนมัติ 24 ชม. เติมเงินปุ๊บ รับรหัสและลิงก์อ่านเมลทันที
+        ยินดีต้อนรับสู่ Mumu Store ระบบอัตโนมัติ 24 ชม. เติมเงินปุ๊บ รับรหัสและลิงก์อ่านเมลทันที • Line: @789kxbfn
     </div>
 
     <!-- Navbar เมนูนำทาง -->
@@ -128,6 +128,9 @@
                 </a>
                 <a href="#reviews" class="px-4 py-1.5 rounded-full text-sm font-medium text-slate-600 hover:text-pink-500 transition flex items-center gap-1.5">
                     <i data-lucide="star" class="w-3.5 h-3.5"></i> รีวิวร้าน
+                </a>
+                <a href="https://lin.ee/83goAf5" target="_blank" rel="noopener noreferrer" class="px-4 py-1.5 rounded-full text-sm font-medium text-emerald-600 hover:bg-emerald-50 transition flex items-center gap-1.5">
+                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> ติดต่อไลน์
                 </a>
             </div>
 
@@ -218,6 +221,10 @@
                             <i data-lucide="user-plus" class="w-4 h-4"></i>
                             <span>สมัครสมาชิกฟรี</span>
                         </button>
+                        <a href="https://lin.ee/83goAf5" target="_blank" rel="noopener noreferrer" class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-5 py-3 rounded-2xl flex items-center gap-2 text-sm sm:text-base shadow-sm transition">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i>
+                            <span>Line: @789kxbfn</span>
+                        </a>
                     </div>
                 </div>
 
@@ -392,9 +399,12 @@
         <p class="text-xs text-slate-500 max-w-md mx-auto">
             ระบบร้านค้าอัตโนมัติ 24 ชั่วโมง จำหน่ายบัญชี Facebook, Instagram, X (Twitter) และ Hotmail พร้อมใช้งาน
         </p>
-        <div class="flex justify-center gap-3 pt-1">
-            <span class="px-3 py-1 bg-pink-100 text-pink-600 border border-pink-200 rounded-full text-xs">Line: @mumustore</span>
-            <span class="px-3 py-1 bg-sky-100 text-sky-600 border border-sky-200 rounded-full text-xs">เปิดบริการ 24 ชม.</span>
+        <div class="flex flex-wrap justify-center gap-3 pt-1">
+            <a href="https://lin.ee/83goAf5" target="_blank" rel="noopener noreferrer" class="px-4 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full text-xs font-semibold shadow-xs transition inline-flex items-center gap-1.5">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                <span>Line: @789kxbfn (คลิกแอดไลน์)</span>
+            </a>
+            <span class="px-3.5 py-1.5 bg-sky-100 text-sky-600 border border-sky-200 rounded-full text-xs font-medium">เปิดบริการ 24 ชม.</span>
         </div>
     </footer>
 
@@ -774,7 +784,7 @@
 
                         <div>
                             <label class="block text-xs font-medium text-slate-500 mb-1">ข้อความแถบประกาศด้านบนสุด</label>
-                            <input type="text" id="settingAnnouncement" value="ยินดีต้อนรับสู่ Mumu Store ระบบอัตโนมัติ 24 ชม. เติมเงินปุ๊บ รับรหัสและลิงก์อ่านเมลทันที" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
+                            <input type="text" id="settingAnnouncement" value="ยินดีต้อนรับสู่ Mumu Store ระบบอัตโนมัติ 24 ชม. เติมเงินปุ๊บ รับรหัสและลิงก์อ่านเมลทันที • Line: @789kxbfn" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
                         </div>
 
                         <div>
@@ -1336,23 +1346,39 @@
         }
 
         // ซื้อสินค้า
-        function buyProduct(id) {
+        async function buyProduct(id) {
             if (!currentUser) {
                 showToast('กรุณาสมัครสมาชิกหรือเข้าสู่ระบบก่อนสั่งซื้อสินค้านะคะ');
                 openAuthModal('register');
                 return;
             }
 
+            // ซิงค์ข้อมูลสต็อกล่าสุดจาก Google Sheets ก่อนตัดสต็อก เพื่อป้องกันการขายรหัสซ้ำข้ามเครื่อง
+            if (googleScriptWebAppUrl) {
+                try {
+                    await syncFromGoogleSheet(false);
+                } catch (e) {}
+            }
+
             const product = productsData.find(p => p.id === id);
             if (!product) return;
 
-            // หากเป็นสินค้าหมวดหมู่เว็บไซต์ เปิดหน้าชำระเงิน + แนบสลิป + ส่งไอดีไลน์/QR ไลน์
+            // หากเป็นสินค้าหมวดหมู่เว็บไซต์ เปิดหน้าชำระเงิน + แนบสลิป + ส่งไอดีไลน์/คิวอาร์โค้ดไลน์
             if (product.category === 'website') {
                 openWebsiteOrderModal(product);
                 return;
             }
 
-            if (product.stock <= 0) return;
+            // ตรวจสอบรหัสที่พร้อมส่งในคลังของสินค้านั้นๆ เพื่อป้องกันการขายรหัสซ้ำ
+            const availablePoolForProduct = mailAccountsPool.filter(m => String(m.productId) === String(product.id) && m.status === 'available');
+            const effectiveStock = availablePoolForProduct.length > 0 ? availablePoolForProduct.length : product.stock;
+
+            if (effectiveStock <= 0) {
+                product.stock = 0;
+                renderProducts();
+                showToast('ขออภัยค่ะ สินค้าชิ้นนี้สต็อกหมดแล้ว');
+                return;
+            }
 
             if (userBalance < product.price) {
                 showToast(`ยอดเงินไม่เพียงพอ (ขาดอีก ${(product.price - userBalance).toFixed(2)} ฿) กรุณาเติมเงินก่อนนะคะ`);
@@ -1364,16 +1390,8 @@
             if (currentUser) currentUser.balance = userBalance;
             document.getElementById('userBalance').innerText = `${userBalance.toFixed(2)} ฿`;
 
-            product.stock -= 1;
-            totalSold += 1;
-            const totalSoldEl = document.getElementById('totalSoldDisplay');
-            if (totalSoldEl) {
-                totalSoldEl.innerHTML = `${totalSold.toLocaleString()} <span class="text-xs font-normal text-slate-500">ครั้ง</span>`;
-            }
-
-            // ดึงบัญชีพร้อมข้อมูลเฉพาะบุคคลจากคลัง (ถ้ามี)
-            const matchedMailAcc = mailAccountsPool.find(m => m.productId === product.id && m.status === 'available')
-                                || mailAccountsPool.find(m => m.status === 'available');
+            // ดึงบัญชีพร้อมข้อมูลเฉพาะบุคคลที่ยังสถานะ 'available' เท่านั้น (ไม่หยิบรหัสที่ status === 'sold' มาขายซ้ำเด็ดขาด)
+            const matchedMailAcc = availablePoolForProduct[0];
 
             let accountEmail = `mumu_${Math.floor(1000 + Math.random() * 9000)}@hotmail.com`;
             let accountPass = `Mumu#${Math.floor(100000 + Math.random() * 900000)}`;
@@ -1384,12 +1402,26 @@
 
             if (matchedMailAcc) {
                 matchedMailAcc.status = 'sold';
+                matchedMailAcc.soldTo = currentUser ? currentUser.username : 'Guest';
+                matchedMailAcc.soldAt = new Date().toISOString();
                 accountEmail = matchedMailAcc.email;
                 accountPass = matchedMailAcc.password;
                 twoFA = matchedMailAcc.twoFA || '';
                 accountLink = matchedMailAcc.accountLink || '';
                 mailCode = matchedMailAcc.mailCode || '';
                 readMailUrl = matchedMailAcc.readMailUrl || '';
+
+                // อัปเดตสต็อกคงเหลือตามจำนวนบัญชีสถานะ 'available' ที่เหลือจริงในคลัง
+                const remainingCount = mailAccountsPool.filter(m => String(m.productId) === String(product.id) && m.status === 'available').length;
+                product.stock = remainingCount;
+            } else {
+                product.stock = Math.max(0, product.stock - 1);
+            }
+
+            totalSold += 1;
+            const totalSoldEl = document.getElementById('totalSoldDisplay');
+            if (totalSoldEl) {
+                totalSoldEl.innerHTML = `${totalSold.toLocaleString()} <span class="text-xs font-normal text-slate-500">ครั้ง</span>`;
             }
 
             const orderId = `ORD-${Math.floor(10000 + Math.random() * 90000)}`;
@@ -1447,6 +1479,10 @@
                     <i data-lucide="copy" class="w-4 h-4"></i>
                     <span>คัดลอกทั้งหมด</span>
                 </button>
+                <a href="https://lin.ee/83goAf5" target="_blank" rel="noopener noreferrer" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-2xl text-xs font-semibold cursor-pointer flex items-center justify-center gap-1.5 transition">
+                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                    <span>ติดต่อแอดมิน Line: @789kxbfn</span>
+                </a>
                 <button onclick="closeModal('orderModal')" class="w-full btn-cute bg-pink-500 text-white py-2.5 rounded-2xl text-sm font-medium cursor-pointer">
                     เรียบร้อย
                 </button>
@@ -1455,7 +1491,12 @@
             document.getElementById('orderModal').classList.add('flex');
             if (typeof lucide !== 'undefined') lucide.createIcons();
             renderProducts();
-            syncToGoogleSheet();
+            if (isAdminAuthenticated) {
+                renderAdminProducts();
+                renderAdminMailAccounts();
+                renderAdminOrders();
+            }
+            await syncToGoogleSheet();
         }
 
         // หน้าต่างสั่งซื้อสินค้าหมวดหมู่เว็บไซต์ (ชำระเงิน + แนบสลิป + ส่งไอดีไลน์/คิวอาร์โค้ดไลน์)
@@ -1630,6 +1671,10 @@
                             แอดมินได้รับสลิปและช่องทางไลน์ของคุณเรียบร้อยแล้ว จะรีบติดต่อส่งงานให้ทางไลน์ทันทีค่ะ
                         </div>
                     </div>
+                    <a href="https://lin.ee/83goAf5" target="_blank" rel="noopener noreferrer" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-2xl text-sm font-semibold cursor-pointer flex items-center justify-center gap-1.5 transition">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        <span>ทักแชทแอดมิน Line: @789kxbfn</span>
+                    </a>
                     <button onclick="copySingleOrderDetails('${orderId}')" class="w-full btn-cute-blue bg-sky-500 text-white py-2.5 rounded-2xl text-sm font-medium cursor-pointer flex items-center justify-center gap-1.5">
                         <i data-lucide="copy" class="w-4 h-4"></i>
                         <span>คัดลอกทั้งหมด</span>
@@ -1813,9 +1858,12 @@
                 status: 'available'
             });
 
-            // เพิ่มสต็อกสินค้า +1 อัตโนมัติ
-            const prod = productsData.find(p => p.id === productId);
-            if (prod) prod.stock += 1;
+            // เพิ่มสต็อกสินค้า +1 อัตโนมัติ และซิงค์ตามจำนวนพร้อมส่งจริง
+            const prod = productsData.find(p => String(p.id) === String(productId));
+            if (prod) {
+                const availCount = mailAccountsPool.filter(m => String(m.productId) === String(productId) && m.status === 'available').length;
+                prod.stock = availCount;
+            }
 
             document.getElementById('socialStockEmail').value = '';
             document.getElementById('socialStockPass').value = '';
@@ -1826,7 +1874,7 @@
             renderAdminProducts();
             renderAdminMailAccounts();
             syncToGoogleSheet();
-            showToast(`เติมสต็อกแอค ${email} เรียบร้อยแล้วค่ะ`);
+            showToast(`เติมสต็อกบัญชี ${email} เรียบร้อยแล้วค่ะ`);
         }
 
         function adminAddHotmailStock() {
@@ -1852,9 +1900,11 @@
                 status: 'available'
             });
 
-            // เพิ่มสต็อกสินค้า +1 อัตโนมัติ
-            const prod = productsData.find(p => p.id === productId);
-            if (prod) prod.stock += 1;
+            const prod = productsData.find(p => String(p.id) === String(productId));
+            if (prod) {
+                const availCount = mailAccountsPool.filter(m => String(m.productId) === String(productId) && m.status === 'available').length;
+                prod.stock = availCount;
+            }
 
             document.getElementById('hotmailStockEmail').value = '';
             document.getElementById('hotmailStockPass').value = '';
@@ -2444,7 +2494,18 @@
         function adminDeleteMailAccount(id) {
             const idx = mailAccountsPool.findIndex(m => m.id === id);
             if (idx !== -1) {
+                const deletedAcc = mailAccountsPool[idx];
                 mailAccountsPool.splice(idx, 1);
+
+                // ปรับจำนวนสต็อกสินค้าให้ตรงกับจำนวนบัญชีสถานะ 'available' ที่เหลืออยู่
+                const prod = productsData.find(p => String(p.id) === String(deletedAcc.productId));
+                if (prod) {
+                    const availCount = mailAccountsPool.filter(m => String(m.productId) === String(prod.id) && m.status === 'available').length;
+                    prod.stock = availCount;
+                }
+
+                renderProducts();
+                renderAdminProducts();
                 renderAdminMailAccounts();
                 syncToGoogleSheet();
                 showToast('ลบรายการสต็อกบัญชีเรียบร้อยแล้วค่ะ');
@@ -2614,7 +2675,7 @@
                 statusText.innerText = 'พร้อมให้บริการตลอด 24 ชั่วโมง (ระบบอัตโนมัติ)';
             } else {
                 statusDot.className = 'w-2.5 h-2.5 rounded-full bg-pink-400';
-                statusText.innerText = 'กำลังปรับปรุงระบบชั่วคราว (ติดต่อแอดมินได้ทาง Line)';
+                statusText.innerText = 'กำลังปรับปรุงระบบชั่วคราว (ติดต่อแอดมินได้ทาง Line: @789kxbfn)';
             }
 
             renderProducts();
@@ -2879,8 +2940,30 @@
                     const d = json.data;
                     if (Array.isArray(d.categories) && d.categories.length > 0) categoriesData = d.categories;
                     if (Array.isArray(d.products) && d.products.length > 0) productsData = d.products;
-                    if (Array.isArray(d.mailAccounts)) mailAccountsPool = d.mailAccounts;
-                    if (Array.isArray(d.users)) registeredUsers = d.users;
+                    if (Array.isArray(d.mailAccounts)) {
+                        mailAccountsPool = d.mailAccounts;
+                        // ตรวจสอบและซิงค์จำนวนสต็อกพร้อมส่งให้ตรงกับบัญชีที่ status === 'available' เสมอ (ตัดตัวที่ sold ออกถาวร)
+                        productsData.forEach(prod => {
+                            if (prod.category !== 'website') {
+                                const poolForProd = mailAccountsPool.filter(m => String(m.productId) === String(prod.id));
+                                if (poolForProd.length > 0) {
+                                    prod.stock = poolForProd.filter(m => m.status === 'available').length;
+                                }
+                            }
+                        });
+                    }
+                    if (Array.isArray(d.users)) {
+                        registeredUsers = d.users;
+                        if (currentUser) {
+                            const updatedMe = registeredUsers.find(u => u.username === currentUser.username);
+                            if (updatedMe) {
+                                currentUser.balance = updatedMe.balance;
+                                userBalance = updatedMe.balance;
+                                const balEl = document.getElementById('userBalance');
+                                if (balEl) balEl.innerText = `${userBalance.toFixed(2)} ฿`;
+                            }
+                        }
+                    }
                     if (Array.isArray(d.orders)) orderHistory = d.orders;
                     if (Array.isArray(d.topupLogs)) {
                         slipVerifyLogs = d.topupLogs;
