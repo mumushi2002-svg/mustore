@@ -492,9 +492,15 @@
                         <p class="text-[11px] text-white/90">จัดการสินค้า สต็อก และปรับแต่งหน้าร้านได้ทันที</p>
                     </div>
                 </div>
-                <button onclick="closeModal('adminModal')" class="w-8 h-8 rounded-full bg-white/25 hover:bg-white/40 flex items-center justify-center text-white transition cursor-pointer">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="saveAllAndSyncToSheet()" class="bg-white hover:bg-pink-50 text-pink-600 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition cursor-pointer flex items-center gap-1.5">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        <span>บันทึกทั้งหมด</span>
+                    </button>
+                    <button onclick="closeModal('adminModal')" class="w-8 h-8 rounded-full bg-white/25 hover:bg-white/40 flex items-center justify-center text-white transition cursor-pointer">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- แถบเมนู Tabs หลังบ้าน -->
@@ -866,10 +872,14 @@
                             </div>
                         </div>
 
-                        <div class="pt-2 text-right">
+                        <div class="pt-2 flex flex-wrap items-center justify-end gap-2">
                             <button onclick="saveStoreSettings()" class="btn-cute-blue bg-sky-500 text-white font-medium py-2.5 px-6 rounded-2xl text-sm cursor-pointer inline-flex items-center gap-1.5">
                                 <i data-lucide="save" class="w-4 h-4"></i>
                                 <span>บันทึกการตั้งค่าร้าน</span>
+                            </button>
+                            <button onclick="saveAllAndSyncToSheet()" class="btn-cute bg-pink-500 text-white font-medium py-2.5 px-6 rounded-2xl text-sm cursor-pointer inline-flex items-center gap-1.5">
+                                <i data-lucide="cloud-upload" class="w-4 h-4"></i>
+                                <span>บันทึกทั้งหมด</span>
                             </button>
                         </div>
                     </div>
@@ -2724,9 +2734,16 @@
         }
 
         // ================= ระบบเชื่อมต่อฐานข้อมูลถาวร GOOGLE SHEETS =================
-        let googleScriptWebAppUrl = '';
+        // นำลิงก์ Web App URL (ลงท้ายด้วย /exec) จาก Google Apps Script มาวางในเครื่องหมายคำพูดด้านล่างนี้ได้เลยค่ะ
+        const DEFAULT_GOOGLE_SCRIPT_URL = 'วางลิงก์_exec_ที่นี่';
+
+        const isValidGoogleScriptUrl = (url) => typeof url === 'string' && url.startsWith('https://script.google.com/');
+        let googleScriptWebAppUrl = isValidGoogleScriptUrl(DEFAULT_GOOGLE_SCRIPT_URL) ? DEFAULT_GOOGLE_SCRIPT_URL : '';
         try {
-            googleScriptWebAppUrl = localStorage.getItem('mumu_gs_webapp_url') || '';
+            const savedGsUrl = localStorage.getItem('mumu_gs_webapp_url');
+            if (!googleScriptWebAppUrl && isValidGoogleScriptUrl(savedGsUrl)) {
+                googleScriptWebAppUrl = savedGsUrl;
+            }
         } catch (e) {}
 
         function updateGoogleSheetBadge(statusText, isConnected) {
@@ -2738,10 +2755,67 @@
                 : 'text-[11px] px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200 font-medium';
         }
 
-        async function syncToGoogleSheet() {
+        // บันทึกทั้งหมด (ตั้งค่าร้าน + สินค้า + สต็อก + หมวดหมู่ + ออเดอร์ + สมาชิก + รีวิว) ลง Google Sheets อัตโนมัติทันที
+        async function saveAllAndSyncToSheet() {
+            const gsUrlInput = document.getElementById('settingGoogleScriptUrl');
+            if (gsUrlInput && gsUrlInput.value.trim()) {
+                googleScriptWebAppUrl = gsUrlInput.value.trim();
+                try {
+                    localStorage.setItem('mumu_gs_webapp_url', googleScriptWebAppUrl);
+                } catch (e) {}
+            }
+
+            // อัปเดตการตั้งค่าร้านค้าให้เป็นปัจจุบันก่อนซิงค์
+            const storeName = document.getElementById('settingStoreName')?.value.trim() || 'Mumu Store';
+            const storeLogoUrl = document.getElementById('settingStoreLogoUrl')?.value.trim() || 'https://i.ibb.co/Gv5DV83j/IMG-4109.png';
+            const announcement = document.getElementById('settingAnnouncement')?.value.trim();
+            const heroDesc = document.getElementById('settingHeroDesc')?.value.trim();
+
+            paymentConfig.accountName = document.getElementById('settingAccountName')?.value.trim() || 'ชรินพัชร เพชรสวน เท่านั้น';
+            const customUrlInput = document.getElementById('settingCustomQrUrl')?.value.trim();
+            if (customUrlInput) paymentConfig.customQrUrl = customUrlInput;
+
+            document.title = `${storeName} - ร้านแอปพรีเมียมสุดคิวท์ 24 ชม.`;
+            document.getElementById('navStoreName').innerText = storeName;
+            document.getElementById('heroStoreTitle').innerText = storeName;
+            document.getElementById('bannerStoreTitle').innerText = storeName;
+            document.getElementById('footerStoreName').innerText = storeName;
+            document.getElementById('navStoreLogo').innerHTML = `<img src="${storeLogoUrl}" alt="${storeName}" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FFE4E6/FB7185?text=Logo';" class="w-full h-full object-cover">`;
+            document.getElementById('bannerStoreLogo').src = storeLogoUrl;
+            document.getElementById('footerStoreLogo').src = storeLogoUrl;
+            if (announcement) document.getElementById('topAnnouncementBar').innerText = announcement;
+            if (heroDesc) document.getElementById('heroStoreDesc').innerText = heroDesc;
+
+            renderCategories();
+            renderProducts();
+            renderAdminProducts();
+            renderAdminMailAccounts();
+
+            if (!googleScriptWebAppUrl) {
+                showToast('บันทึกข้อมูลในหน้าเว็บแล้ว (กรุณาใส่ลิงก์ Apps Script /exec เพื่อให้บันทึกลง Google Sheets ถาวรค่ะ)');
+                return;
+            }
+
+            showToast('กำลังบันทึกข้อมูลทั้งหมดลง Google Sheets...');
+            await syncToGoogleSheet(true);
+        }
+
+        async function syncToGoogleSheet(notifySuccess = false) {
             if (!googleScriptWebAppUrl) return;
             updateGoogleSheetBadge('กำลังบันทึกลงชีต...', true);
             try {
+                // ป้องกันรูปภาพ Base64 ขนาดใหญ่เกิน 50,000 ตัวอักษรที่ Google Sheets จำกัดต่อ 1 ช่อง
+                const sanitizedProducts = productsData.map(p => ({
+                    ...p,
+                    imageUrl: (p.imageUrl && p.imageUrl.length > 40000)
+                        ? `https://placehold.co/400x220/FFE4E6/FB7185?text=${encodeURIComponent(p.name)}`
+                        : p.imageUrl
+                }));
+
+                const safeQrUrl = (paymentConfig.customQrUrl && paymentConfig.customQrUrl.length > 40000)
+                    ? 'GEM_PHOTO_FE0499BF-6BFE-4A24-A0E6-BADEC81CABC1_L0_001_recent_photo_FF91FAD7-75D6-47D0-8AB8-68705F362DCF.jpg'
+                    : paymentConfig.customQrUrl;
+
                 const storeSettingsObj = {
                     id: 'main_settings',
                     storeName: document.getElementById('settingStoreName')?.value || 'Mumu Store',
@@ -2749,7 +2823,7 @@
                     announcement: document.getElementById('settingAnnouncement')?.value || '',
                     heroDesc: document.getElementById('settingHeroDesc')?.value || '',
                     accountName: paymentConfig.accountName,
-                    customQrUrl: paymentConfig.customQrUrl,
+                    customQrUrl: safeQrUrl,
                     totalSold: totalSold
                 };
 
@@ -2761,10 +2835,10 @@
                         action: 'syncAll',
                         payload: {
                             categories: categoriesData,
-                            products: productsData,
+                            products: sanitizedProducts,
                             mailAccounts: mailAccountsPool,
                             users: registeredUsers,
-                            orders: orderHistory,
+                            orders: orderHistory.map(o => ({ ...o, lineQrUrl: (o.lineQrUrl && o.lineQrUrl.length > 40000) ? '' : o.lineQrUrl })),
                             topupLogs: slipVerifyLogs,
                             reviews: reviewsData,
                             settings: [storeSettingsObj]
@@ -2772,9 +2846,15 @@
                     })
                 });
                 updateGoogleSheetBadge('บันทึกข้อมูลลงชีตแล้ว', true);
+                if (notifySuccess) {
+                    showToast('บันทึกทั้งหมดลง Google Sheets เรียบร้อยแล้วค่ะ');
+                }
             } catch (err) {
                 console.error('Google Sheet Sync Error:', err);
                 updateGoogleSheetBadge('เชื่อมต่อชีตขัดข้อง', false);
+                if (notifySuccess) {
+                    showToast('เกิดข้อผิดพลาดในการบันทึกลงชีต กรุณาตรวจสอบลิงก์ /exec ค่ะ');
+                }
             }
         }
 
