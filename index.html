@@ -1,0 +1,2862 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mumu Store - ร้านแอปพรีเมียมสุดคิวท์ 24 ชม.</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Kanit & Mali สำหรับความน่ารักและอ่านง่าย -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Kanit', 'sans-serif'],
+                        cute: ['Mali', 'cursive'],
+                    },
+                    colors: {
+                        pastelPink: '#FFE4E6',
+                        softPink: '#FDA4AF',
+                        hotCute: '#FB7185',
+                        pastelBlue: '#E0F2FE',
+                        softBlue: '#7DD3FC',
+                        pastelPurple: '#F3E8FF',
+                        pastelYellow: '#FEF9C3',
+                        creamBg: '#FFFDF9',
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'wiggle': 'wiggle 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-2deg)' },
+                            '50%': { transform: 'rotate(2deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FFF1F5;
+            background-image: radial-gradient(rgba(244, 114, 182, 0.28) 1.5px, transparent 1.5px), radial-gradient(rgba(56, 189, 248, 0.22) 1.5px, #FFF1F5 1.5px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+        }
+        /* สไตล์ปุ่มนุ่มฟูแบบ 3D เล็กๆ */
+        .btn-cute {
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 0 #BE185D;
+        }
+        .btn-cute:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #BE185D, 0 0 15px rgba(244, 114, 182, 0.4);
+        }
+        .btn-cute:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #BE185D;
+        }
+
+        .btn-cute-blue {
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 0 #0369A1;
+        }
+        .btn-cute-blue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #0369A1, 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+        .btn-cute-blue:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #0369A1;
+        }
+
+        .card-cute {
+            transition: all 0.25s ease;
+            border: 2px solid rgba(244, 114, 182, 0.25);
+        }
+        .card-cute:hover {
+            transform: translateY(-4px);
+            border-color: #38BDF8;
+            box-shadow: 0 12px 24px -8px rgba(244, 114, 182, 0.35), 0 0 15px rgba(56, 189, 248, 0.2);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-pink-400 selection:text-white">
+
+    <!-- แถบประกาศด้านบน -->
+    <div id="topAnnouncementBar" class="bg-gradient-to-r from-pink-400 via-pink-500 to-sky-400 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium shadow-sm">
+        ยินดีต้อนรับสู่ Mumu Store ระบบอัตโนมัติ 24 ชม. เติมเงินปุ๊บ รับรหัสและลิงก์อ่านเมลทันที
+    </div>
+
+    <!-- Navbar เมนูนำทาง -->
+    <nav class="sticky top-2 z-40 mx-auto max-w-6xl px-3 sm:px-6 mt-3">
+        <div class="bg-white/90 backdrop-blur-md border-2 border-pink-200 rounded-full px-4 sm:px-6 py-2.5 shadow-lg shadow-pink-200/40 flex items-center justify-between">
+            <!-- โลโก้ร้าน -->
+            <a href="#" class="flex items-center gap-2.5 group">
+                <div id="navStoreLogo" class="w-10 h-10 rounded-full bg-pink-50 border-2 border-pink-400 flex items-center justify-center overflow-hidden shadow-xs group-hover:rotate-12 transition-transform shrink-0">
+                    <img src="https://i.ibb.co/Gv5DV83j/IMG-4109.png" alt="Mumu Store Logo" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FFE4E6/F472B6?text=Mumu';" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <span id="navStoreName" class="font-cute font-bold text-lg sm:text-xl bg-gradient-to-r from-pink-500 to-sky-500 bg-clip-text text-transparent">
+                        Mumu Store
+                    </span>
+                    <span class="hidden sm:inline-block text-[10px] bg-pink-100 text-pink-600 border border-pink-200 px-2 py-0.5 rounded-full ml-1 font-medium">AUTO 24H</span>
+                </div>
+            </a>
+
+            <!-- เมนูตรงกลาง (Desktop) -->
+            <div class="hidden md:flex items-center gap-1 bg-pink-50/80 p-1 rounded-full border border-pink-200/70">
+                <a href="#home" class="px-4 py-1.5 rounded-full text-sm font-medium bg-gradient-to-r from-pink-400 to-sky-400 text-white shadow-sm flex items-center gap-1.5">
+                    <i data-lucide="home" class="w-3.5 h-3.5"></i> หน้าแรก
+                </a>
+                <a href="#products" class="px-4 py-1.5 rounded-full text-sm font-medium text-slate-600 hover:text-pink-500 transition flex items-center gap-1.5">
+                    <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i> สินค้าทั้งหมด
+                </a>
+                <a href="#reviews" class="px-4 py-1.5 rounded-full text-sm font-medium text-slate-600 hover:text-pink-500 transition flex items-center gap-1.5">
+                    <i data-lucide="star" class="w-3.5 h-3.5"></i> รีวิวร้าน
+                </a>
+            </div>
+
+            <!-- ส่วนสมาชิก & ยอดเงิน & ปุ่มหลังบ้าน -->
+            <div class="flex items-center gap-2">
+                <!-- ปุ่มประวัติลูกค้า (แสดงเมื่อเข้าสู่ระบบแล้ว) -->
+                <button id="navHistoryBtn" onclick="openCustomerHistoryModal()" class="hidden items-center gap-1.5 bg-pink-50 hover:bg-pink-100 border border-pink-300 text-pink-600 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition cursor-pointer shadow-xs" title="ประวัติการสั่งซื้อและเติมเงิน">
+                    <i data-lucide="history" class="w-3.5 h-3.5 text-pink-500"></i>
+                    <span class="hidden sm:inline">ประวัติของฉัน</span>
+                </button>
+
+                <!-- แสดงเครดิตจำลอง (แสดงเมื่อเข้าสู่ระบบแล้ว) -->
+                <button id="navBalanceBtn" onclick="openTopupModal()" class="hidden items-center gap-1.5 bg-sky-50 hover:bg-sky-100 border border-sky-300 text-sky-700 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition cursor-pointer shadow-xs" title="คลิกเพื่อเติมเงิน">
+                    <i data-lucide="wallet" class="w-3.5 h-3.5 text-sky-500"></i>
+                    <span id="userBalance">0.00 ฿</span>
+                    <span class="bg-sky-500 text-white font-bold w-4 h-4 rounded-full flex items-center justify-center text-xs leading-none">+</span>
+                </button>
+
+                <!-- แสดงชื่อผู้ใช้ & ปุ่มออกจากระบบ -->
+                <div id="navUserBadge" class="hidden items-center gap-1.5 bg-pink-50 border border-pink-300 px-3 py-1.5 rounded-full text-xs text-pink-700">
+                    <i data-lucide="user-check" class="w-3.5 h-3.5 text-pink-500"></i>
+                    <span id="navUsernameDisplay" class="font-semibold max-w-[80px] truncate">Member</span>
+                    <button onclick="logoutUser()" class="text-slate-400 hover:text-rose-500 ml-1 cursor-pointer flex items-center" title="ออกจากระบบ">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                <!-- ปุ่มสมัครสมาชิก / เข้าสู่ระบบ (แสดงเมื่อยังไม่ล็อกอิน) -->
+                <div id="navGuestActions" class="flex items-center gap-1.5">
+                    <button onclick="openAuthModal('login')" class="bg-sky-50 hover:bg-sky-100 border border-sky-300 text-sky-600 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition cursor-pointer flex items-center gap-1.5">
+                        <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+                        <span>เข้าสู่ระบบ</span>
+                    </button>
+                    <button onclick="openAuthModal('register')" class="bg-pink-500 hover:bg-pink-600 text-white px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition shadow-sm cursor-pointer flex items-center gap-1.5">
+                        <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                        <span>สมัครสมาชิก</span>
+                    </button>
+                </div>
+
+                <!-- ปุ่มเปิดระบบหลังบ้าน -->
+                <button onclick="openAdminModal()" class="flex items-center gap-1.5 bg-gradient-to-r from-pink-500 to-sky-500 hover:opacity-90 text-white px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition shadow-sm cursor-pointer" title="ตั้งค่าระบบหลังบ้าน">
+                    <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                    <span class="hidden sm:inline">หลังบ้าน</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-20 space-y-10">
+
+        <!-- Hero Section & แบนเนอร์หลัก (ตัวหนังสือซ้าย - ตัวการ์ตูนใหญ่ด้านขวา) -->
+        <section id="home" class="relative overflow-hidden rounded-[2.25rem] bg-gradient-to-br from-white via-pink-50/90 to-sky-50/80 border-2 border-pink-200 shadow-xl shadow-pink-200/50 p-6 sm:p-10 lg:p-12">
+            <!-- แสงฟุ้งสีชมพู-ฟ้า -->
+            <div class="absolute -top-24 -left-24 w-72 h-72 bg-pink-300/25 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -right-24 w-72 h-72 bg-sky-300/25 rounded-full blur-3xl pointer-events-none"></div>
+            <!-- ของตกแต่งเรขาคณิต -->
+            <div class="absolute top-6 right-8 text-sky-400/70 animate-float pointer-events-none">
+                <i data-lucide="sparkles" class="w-7 h-7"></i>
+            </div>
+            <div class="absolute bottom-6 left-10 text-pink-400/60 animate-wiggle pointer-events-none">
+                <i data-lucide="heart" class="w-6 h-6"></i>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative z-10">
+                <!-- ตัวหนังสืออยู่ด้านซ้าย -->
+                <div class="md:col-span-6 lg:col-span-6 text-left space-y-4">
+                    <div class="inline-flex items-center gap-2 bg-white/95 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium text-pink-600 shadow-xs border border-pink-200">
+                        <span id="storeStatusDot" class="w-2.5 h-2.5 rounded-full bg-sky-400 animate-ping"></span>
+                        <span id="storeStatusText">พร้อมให้บริการตลอด 24 ชั่วโมง (ระบบอัตโนมัติ)</span>
+                    </div>
+
+                    <h1 class="font-cute text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-800 leading-tight">
+                        ยินดีต้อนรับสู่ <br>
+                        <span id="heroStoreTitle" class="bg-gradient-to-r from-pink-500 via-pink-400 to-sky-500 bg-clip-text text-transparent underline decoration-wavy decoration-pink-300">Mumu Store</span>
+                    </h1>
+
+                    <p id="heroStoreDesc" class="text-slate-600 text-sm sm:text-base max-w-xl leading-relaxed">
+                        ศูนย์รวมบัญชี <span class="font-semibold text-pink-500">Facebook, Instagram, X (Twitter) และ Hotmail</span> คุณภาพสูง พร้อมใช้งานทันที มี <span class="font-semibold text-sky-500">ระบบอ่านเมลยืนยันอัตโนมัติ</span> ตลอด 24 ชม.
+                    </p>
+
+                    <div class="flex flex-wrap items-center justify-start gap-3 pt-2">
+                        <a href="#products" class="btn-cute bg-pink-500 text-white font-medium px-6 py-3 rounded-2xl flex items-center gap-2 text-sm sm:text-base">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                            <span>เลือกซื้อสินค้าเลย</span>
+                        </a>
+                        <button id="heroAuthBtn" onclick="openAuthModal('register')" class="btn-cute-blue bg-sky-500 text-white font-medium px-6 py-3 rounded-2xl flex items-center gap-2 text-sm sm:text-base cursor-pointer">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i>
+                            <span>สมัครสมาชิกฟรี</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ตัวการ์ตูนใหญ่ๆ อยู่ด้านขวา -->
+                <div class="md:col-span-6 lg:col-span-6 flex flex-col items-center justify-center">
+                    <div class="relative flex flex-col items-center">
+                        <!-- วงแสงพาสเทลด้านหลังตัวการ์ตูน -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-pink-300/40 via-white to-sky-300/40 rounded-full blur-2xl scale-110 pointer-events-none"></div>
+                        
+                        <!-- รูปตัวการ์ตูนขนาดใหญ่ -->
+                        <div class="relative animate-float">
+                            <img id="bannerStoreLogo" src="https://i.ibb.co/Gv5DV83j/IMG-4109.png" alt="Mumu Store Mascot" onerror="this.onerror=null; this.src='https://placehold.co/320x320/FFE4E6/FB7185?text=Mumu';" class="w-56 h-56 sm:w-68 sm:h-68 lg:w-72 lg:h-72 rounded-[2.5rem] object-cover border-4 border-white shadow-2xl shadow-pink-300/60 bg-white">
+                            
+                            <!-- ป้ายชื่อร้านติดมุมล่างตัวการ์ตูน -->
+                            <div class="mt-4 bg-white/95 backdrop-blur-xs px-5 py-2 rounded-2xl border-2 border-pink-200 shadow-md text-center">
+                                <span id="bannerStoreTitle" class="font-cute font-bold text-lg sm:text-xl bg-gradient-to-r from-pink-500 to-sky-500 bg-clip-text text-transparent block">
+                                    Mumu Store
+                                </span>
+                                <span class="text-[11px] text-slate-500 font-medium">FB / IG / X / Hotmail • ระบบอัตโนมัติ 24 ชม.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- แถบสถิติร้านค้า 4 ช่อง (สไตล์ Pastel Pink & Sky) -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+            <!-- สถิติ 1 -->
+            <div class="bg-white/95 rounded-3xl p-4 sm:p-5 border-2 border-pink-200 shadow-sm flex items-center gap-3.5">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-pink-100 text-pink-500 border border-pink-200 flex items-center justify-center shrink-0">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium">สมาชิกทั้งหมด</p>
+                    <p class="font-cute text-xl sm:text-2xl font-bold text-slate-800" id="totalMembersDisplay">0 <span class="text-xs font-normal text-slate-500">คน</span></p>
+                </div>
+            </div>
+
+            <!-- สถิติ 2 -->
+            <div class="bg-white/95 rounded-3xl p-4 sm:p-5 border-2 border-sky-200 shadow-sm flex items-center gap-3.5">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-sky-100 text-sky-500 border border-sky-200 flex items-center justify-center shrink-0">
+                    <i data-lucide="layers" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium">สินค้าทั้งหมด</p>
+                    <p class="font-cute text-xl sm:text-2xl font-bold text-slate-800" id="totalProductsDisplay">0 <span class="text-xs font-normal text-slate-500">รายการ</span></p>
+                </div>
+            </div>
+
+            <!-- สถิติ 3 -->
+            <div class="bg-white/95 rounded-3xl p-4 sm:p-5 border-2 border-sky-200 shadow-sm flex items-center gap-3.5">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-sky-100 text-sky-500 border border-sky-200 flex items-center justify-center shrink-0">
+                    <i data-lucide="package" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium">สต็อกพร้อมส่ง</p>
+                    <p class="font-cute text-xl sm:text-2xl font-bold text-sky-500" id="totalStockDisplay">0 <span class="text-xs font-normal text-slate-500">ชิ้น</span></p>
+                </div>
+            </div>
+
+            <!-- สถิติ 4 -->
+            <div class="bg-white/95 rounded-3xl p-4 sm:p-5 border-2 border-pink-200 shadow-sm flex items-center gap-3.5">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-pink-100 text-pink-500 border border-pink-200 flex items-center justify-center shrink-0">
+                    <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium">ออเดอร์สำเร็จ</p>
+                    <p class="font-cute text-xl sm:text-2xl font-bold text-pink-500" id="totalSoldDisplay">0 <span class="text-xs font-normal text-slate-500">ครั้ง</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- หมวดหมู่ & รายการสินค้า -->
+        <section id="products" class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="font-cute text-2xl sm:text-3xl font-bold text-slate-800 flex items-center gap-2">
+                        <i data-lucide="sparkles" class="w-6 h-6 text-pink-500"></i>
+                        <span>หมวดหมู่สินค้าแนะนำ</span>
+                    </h2>
+                    <p class="text-sm text-slate-500">เลือกแพ็กเกจที่ต้องการ กดสั่งซื้อแล้วรับรหัสใช้งานได้ทันที</p>
+                </div>
+
+                <!-- ปุ่มกรองหมวดหมู่ -->
+                <div class="flex flex-wrap gap-2" id="categoryFilters">
+                    <!-- ปุ่มหมวดหมู่จะถูกสร้างอัตโนมัติจากรายการหมวดหมู่ -->
+                </div>
+            </div>
+
+            <!-- Grid การ์ดสินค้า -->
+            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- สินค้าจะถูกสร้างด้วย JavaScript -->
+            </div>
+        </section>
+
+        <!-- รีวิวจากลูกค้า -->
+        <section id="reviews" class="space-y-6 pt-4">
+            <div class="text-center space-y-1">
+                <span class="bg-pink-100 text-pink-600 border border-pink-200 text-xs font-semibold px-3 py-1 rounded-full">รีวิวความประทับใจ</span>
+                <h2 class="font-cute text-2xl font-bold text-slate-800">เสียงตอบรับจากลูกค้าและตัวแทน</h2>
+            </div>
+
+            <!-- ฟอร์มเขียนรีวิวสำหรับลูกค้า -->
+            <div class="bg-white/95 p-5 sm:p-6 rounded-[2rem] border-2 border-dashed border-pink-300 max-w-2xl mx-auto space-y-4 shadow-lg shadow-pink-200/30">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-cute font-bold text-base sm:text-lg text-pink-500 flex items-center gap-2">
+                        <i data-lucide="pen-line" class="w-4 h-4"></i>
+                        <span>เขียนรีวิวให้ Mumu Store</span>
+                    </h3>
+                    <span class="text-[11px] bg-sky-100 text-sky-600 px-2.5 py-1 rounded-full border border-sky-200">แสดงผลทันที</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 text-xs sm:text-sm">
+                    <!-- เลือกป้ายกำกับ -->
+                    <select id="reviewAvatarInput" class="sm:col-span-3 px-3 py-2.5 rounded-xl bg-pink-50/70 text-pink-600 border border-pink-200 focus:outline-none focus:border-sky-400 text-center font-semibold">
+                        <option value="VIP">VIP Member</option>
+                        <option value="AGENT">ตัวแทนร้าน</option>
+                        <option value="BUYER">ผู้ซื้อจริง</option>
+                        <option value="PRO">ลูกค้าประจำ</option>
+                    </select>
+                    <!-- ชื่อลูกค้า -->
+                    <input type="text" id="reviewNameInput" placeholder="ชื่อของคุณ (เช่น น้องมิ้นท์)" class="sm:col-span-4 px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                    <!-- สินค้าที่สั่งซื้อ -->
+                    <select id="reviewProductInput" class="sm:col-span-5 px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                        <option value="สั่งซื้อ Facebook บัญชีเขียว">Facebook บัญชีเขียว</option>
+                        <option value="สั่งซื้อ Instagram บัญชีพร้อมใช้งาน">Instagram บัญชีพร้อมใช้งาน</option>
+                        <option value="สั่งซื้อ X (Twitter) + Token">X (Twitter) + Token</option>
+                        <option value="สั่งซื้อ Hotmail คุณภาพสูง">Hotmail คุณภาพสูง</option>
+                    </select>
+                </div>
+
+                <!-- เลือกคะแนนดาว -->
+                <div class="flex flex-wrap items-center justify-between gap-2 bg-pink-50/60 px-4 py-2.5 rounded-2xl border border-pink-200">
+                    <span class="text-xs text-slate-600">ให้คะแนนความพึงพอใจ:</span>
+                    <div class="flex items-center gap-1.5" id="starRatingSelector">
+                        <button type="button" onclick="setReviewStars(1)" class="star-btn text-pink-500 cursor-pointer transition-transform hover:scale-125"><i data-lucide="star" class="w-4 h-4 fill-current"></i></button>
+                        <button type="button" onclick="setReviewStars(2)" class="star-btn text-pink-500 cursor-pointer transition-transform hover:scale-125"><i data-lucide="star" class="w-4 h-4 fill-current"></i></button>
+                        <button type="button" onclick="setReviewStars(3)" class="star-btn text-pink-500 cursor-pointer transition-transform hover:scale-125"><i data-lucide="star" class="w-4 h-4 fill-current"></i></button>
+                        <button type="button" onclick="setReviewStars(4)" class="star-btn text-pink-500 cursor-pointer transition-transform hover:scale-125"><i data-lucide="star" class="w-4 h-4 fill-current"></i></button>
+                        <button type="button" onclick="setReviewStars(5)" class="star-btn text-pink-500 cursor-pointer transition-transform hover:scale-125"><i data-lucide="star" class="w-4 h-4 fill-current"></i></button>
+                        <span id="selectedStarText" class="text-xs font-bold text-pink-500 ml-1">(5/5)</span>
+                    </div>
+                </div>
+
+                <!-- กล่องข้อความรีวิว -->
+                <div class="space-y-3">
+                    <textarea id="reviewCommentInput" rows="2" placeholder="พิมพ์ความประทับใจในการสั่งซื้อสินค้า หรือความรวดเร็วของระบบได้เลยค่ะ..." class="w-full px-4 py-2.5 rounded-2xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400 text-xs sm:text-sm"></textarea>
+                    <div class="text-right">
+                        <button type="button" onclick="submitCustomerReview()" class="btn-cute bg-pink-500 text-white px-6 py-2.5 rounded-2xl text-xs sm:text-sm font-medium cursor-pointer inline-flex items-center gap-1.5">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>ส่งรีวิวความประทับใจ</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- รายการรีวิวทั้งหมด -->
+            <div id="reviewsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- รีวิวจะถูกแสดงผลผ่าน JavaScript -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white/90 border-t-2 border-pink-200 py-8 px-4 text-center space-y-3">
+        <div class="flex items-center justify-center gap-2">
+            <img id="footerStoreLogo" src="https://i.ibb.co/Gv5DV83j/IMG-4109.png" alt="Mumu Store" onerror="this.onerror=null; this.src='https://placehold.co/80x80/FFE4E6/FB7185?text=Mumu';" class="w-8 h-8 rounded-full object-cover border border-pink-300">
+            <span id="footerStoreName" class="font-cute font-bold text-xl bg-gradient-to-r from-pink-500 to-sky-500 bg-clip-text text-transparent">Mumu Store</span>
+        </div>
+        <p class="text-xs text-slate-500 max-w-md mx-auto">
+            ระบบร้านค้าอัตโนมัติ 24 ชั่วโมง จำหน่ายบัญชี Facebook, Instagram, X (Twitter) และ Hotmail พร้อมใช้งาน
+        </p>
+        <div class="flex justify-center gap-3 pt-1">
+            <span class="px-3 py-1 bg-pink-100 text-pink-600 border border-pink-200 rounded-full text-xs">Line: @mumustore</span>
+            <span class="px-3 py-1 bg-sky-100 text-sky-600 border border-sky-200 rounded-full text-xs">เปิดบริการ 24 ชม.</span>
+        </div>
+    </footer>
+
+    <!-- Modal เติมเงินอัตโนมัติ -->
+    <div id="topupModal" class="fixed inset-0 bg-pink-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-[#FFF5F8] rounded-[2rem] max-w-md w-full p-6 border-2 border-pink-300 shadow-2xl shadow-pink-300/40 space-y-4 relative animate-fadeIn max-h-[92vh] overflow-y-auto text-slate-800">
+            <button onclick="closeModal('topupModal')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center hover:bg-pink-200 cursor-pointer">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+            
+            <div class="text-center space-y-1">
+                <div class="w-12 h-12 rounded-2xl bg-pink-100 border border-pink-200 text-pink-500 flex items-center justify-center mx-auto mb-1">
+                    <i data-lucide="qr-code" class="w-6 h-6"></i>
+                </div>
+                <h3 class="font-cute text-xl font-bold text-slate-800">เติมเงินเข้าระบบอัตโนมัติ</h3>
+                <p class="text-xs text-slate-500">เลือกหรือระบุยอดเงิน เพื่อสร้าง QR Code พร้อมเพย์</p>
+            </div>
+
+            <!-- ปุ่มเลือกจำนวนเงินด่วน -->
+            <div class="grid grid-cols-4 gap-2">
+                <button onclick="selectTopupAmount(50)" class="py-2 rounded-xl bg-white hover:bg-pink-500 hover:text-white border border-pink-200 font-cute font-bold text-sm text-pink-500 transition cursor-pointer shadow-2xs">50 ฿</button>
+                <button onclick="selectTopupAmount(100)" class="py-2 rounded-xl bg-white hover:bg-pink-500 hover:text-white border border-pink-200 font-cute font-bold text-sm text-pink-500 transition cursor-pointer shadow-2xs">100 ฿</button>
+                <button onclick="selectTopupAmount(300)" class="py-2 rounded-xl bg-white hover:bg-pink-500 hover:text-white border border-pink-200 font-cute font-bold text-sm text-pink-500 transition cursor-pointer shadow-2xs">300 ฿</button>
+                <button onclick="selectTopupAmount(500)" class="py-2 rounded-xl bg-white hover:bg-pink-500 hover:text-white border border-pink-200 font-cute font-bold text-sm text-pink-500 transition cursor-pointer shadow-2xs">500 ฿</button>
+            </div>
+
+            <!-- กรอกยอดเงินเอง -->
+            <div class="flex items-center gap-2">
+                <input type="number" id="topupAmountInput" value="100" min="1" oninput="updateTopupQR()" placeholder="ระบุจำนวนเงิน (บาท)" class="w-full px-3.5 py-2 rounded-xl bg-white border-2 border-sky-200 focus:border-pink-400 focus:outline-none text-sm font-semibold text-center text-sky-600">
+            </div>
+
+            <!-- กล่องแสดง QR Code พร้อมเพย์ -->
+            <div class="bg-white p-4 rounded-3xl border-2 border-dashed border-sky-300 text-center space-y-2 shadow-2xs">
+                <div class="inline-block bg-gradient-to-r from-sky-400 to-pink-400 text-white text-[10px] font-bold px-3 py-0.5 rounded-full tracking-wider">
+                    THAI QR PAYMENT • PROMPTPAY
+                </div>
+                <div class="bg-white p-2.5 rounded-2xl inline-block shadow-sm border-2 border-pink-300">
+                    <img id="promptpayQrImg" src="GEM_PHOTO_FE0499BF-6BFE-4A24-A0E6-BADEC81CABC1_L0_001_recent_photo_FF91FAD7-75D6-47D0-8AB8-68705F362DCF.jpg" alt="PromptPay QR Code ชรินพัชร เพชรสวน" onerror="this.onerror=null; this.src='https://placehold.co/200x200/FFFFFF/FB7185?text=QR+Code';" class="w-44 h-44 object-contain mx-auto">
+                </div>
+                <div class="text-xs space-y-1">
+                    <p class="font-bold text-slate-800 text-sm" id="displayBankAccountName">ชื่อบัญชี: ชรินพัชร เพชรสวน เท่านั้น</p>
+                    <p class="text-sky-600 font-cute font-bold text-base">ยอดโอน: <span id="displayQrAmount">100.00</span> บาท</p>
+                    <div class="mt-1.5 bg-pink-50 border border-pink-200 text-pink-600 font-semibold text-[11px] px-3 py-1 rounded-xl inline-flex items-center gap-1.5">
+                        <i data-lucide="alert-triangle" class="w-3.5 h-3.5 shrink-0"></i>
+                        <span>ห้ามนำคิวอาโค้ดไปแอบอ้างเด็ดขาด</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- อัปโหลดสลิปเพื่อยืนยัน -->
+            <div class="space-y-2.5 pt-1">
+                <div class="flex items-center justify-between text-xs">
+                    <label class="font-medium text-slate-600">แนบสลิปโอนเงินเพื่อตรวจสอบผ่าน API</label>
+                    <span id="slipApiStatusBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-sky-100 text-sky-600 border border-sky-200 font-medium">API Ready</span>
+                </div>
+                <input type="file" id="slipFileInput" accept="image/*" onchange="previewSelectedSlip(event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-pink-100 file:text-pink-600 hover:file:bg-pink-200 cursor-pointer">
+                
+                <!-- กล่องแสดงสถานะการตรวจสอบสลิป API -->
+                <div id="slipVerifyResultBox" class="hidden bg-white p-3 rounded-2xl border border-sky-200 text-xs space-y-1.5">
+                    <!-- แสดงผลลัพธ์จาก API -->
+                </div>
+
+                <button id="btnConfirmTopupApi" onclick="confirmTopupWithQR()" class="w-full btn-cute bg-pink-500 text-white py-2.5 rounded-2xl text-sm font-medium cursor-pointer flex items-center justify-center gap-1.5">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    <span>ส่งสลิปตรวจสอบผ่าน API</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal ยืนยันการสั่งซื้อ & แสดงรหัสสินค้า -->
+    <div id="orderModal" class="fixed inset-0 bg-pink-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-[#FFF5F8] rounded-[2rem] max-w-md w-full p-6 border-2 border-sky-300 shadow-2xl shadow-pink-300/40 space-y-4 relative text-slate-800 max-h-[92vh] overflow-y-auto">
+            <button onclick="closeModal('orderModal')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center hover:bg-pink-200 cursor-pointer">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+            
+            <div id="orderModalContent" class="text-center space-y-3">
+                <!-- เนื้อหาจะถูกเติมโดย JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal ระบบตั้งค่าหลังบ้าน (Admin Dashboard) -->
+    <div id="adminModal" class="fixed inset-0 bg-pink-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-3 sm:p-6">
+        <div class="bg-[#FFF5F8] rounded-[2rem] max-w-4xl w-full max-h-[90vh] flex flex-col border-2 border-pink-300 shadow-2xl shadow-pink-300/40 overflow-hidden text-slate-800">
+            <!-- Header หลังบ้าน -->
+            <div class="bg-gradient-to-r from-pink-400 via-pink-500 to-sky-400 px-6 py-4 text-white flex items-center justify-between shrink-0 border-b border-pink-200">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 bg-white/25 rounded-xl flex items-center justify-center">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-cute font-bold text-lg sm:text-xl leading-tight">ระบบจัดการหลังบ้าน (Admin Panel)</h3>
+                        <p class="text-[11px] text-white/90">จัดการสินค้า สต็อก และปรับแต่งหน้าร้านได้ทันที</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('adminModal')" class="w-8 h-8 rounded-full bg-white/25 hover:bg-white/40 flex items-center justify-center text-white transition cursor-pointer">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- แถบเมนู Tabs หลังบ้าน -->
+            <div class="bg-pink-100/70 px-6 py-2.5 border-b border-pink-200 flex gap-2 overflow-x-auto shrink-0">
+                <button onclick="switchAdminTab('summary', this)" class="admin-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-pink-500 text-white shadow-xs cursor-pointer whitespace-nowrap flex items-center gap-1.5">
+                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                    <span>สรุปยอดขาย</span>
+                </button>
+                <button onclick="switchAdminTab('products', this)" class="admin-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-pink-200 hover:border-sky-400 cursor-pointer whitespace-nowrap flex items-center gap-1.5">
+                    <i data-lucide="package" class="w-4 h-4"></i>
+                    <span>จัดการสินค้า & สต็อก</span>
+                </button>
+                <button onclick="switchAdminTab('mailLinks', this)" class="admin-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-pink-200 hover:border-sky-400 cursor-pointer whitespace-nowrap flex items-center gap-1.5">
+                    <i data-lucide="mail" class="w-4 h-4"></i>
+                    <span>สต็อกบัญชี & ลิงก์อ่านเมล</span>
+                </button>
+                <button onclick="switchAdminTab('settings', this)" class="admin-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-pink-200 hover:border-sky-400 cursor-pointer whitespace-nowrap flex items-center gap-1.5">
+                    <i data-lucide="sliders" class="w-4 h-4"></i>
+                    <span>ตั้งค่าข้อมูลร้าน & ประกาศ</span>
+                </button>
+                <button onclick="switchAdminTab('orders', this)" class="admin-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-pink-200 hover:border-sky-400 cursor-pointer whitespace-nowrap flex items-center gap-1.5">
+                    <i data-lucide="receipt" class="w-4 h-4"></i>
+                    <span>ประวัติการสั่งซื้อ (<span id="adminOrderCount">0</span>)</span>
+                </button>
+            </div>
+
+            <!-- เนื้อหาหลังบ้าน (Scrollable) -->
+            <div class="p-5 sm:p-6 overflow-y-auto flex-1 space-y-6">
+                
+                <!-- Tab 0: สรุปยอดขายสำหรับแอดมิน -->
+                <div id="adminTab-summary" class="space-y-5">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <h4 class="font-cute font-bold text-lg text-pink-500">ภาพรวมและสรุปยอดขายร้านค้า</h4>
+                            <p class="text-xs text-slate-500">อัปเดตยอดขาย ยอดเติมเงิน และสินค้าขายดีแบบเรียลไทม์</p>
+                        </div>
+                        <span class="text-xs bg-sky-100 text-sky-600 border border-sky-200 px-3 py-1 rounded-full font-medium">Realtime Summary</span>
+                    </div>
+
+                    <!-- การ์ดสรุปยอด 4 ช่อง -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="bg-white p-4 rounded-2xl border border-pink-200 space-y-1 shadow-2xs">
+                            <span class="text-xs text-slate-500">ยอดขายรวมทั้งหมด</span>
+                            <p id="adminSummaryRevenue" class="font-cute text-xl sm:text-2xl font-bold text-pink-500">0.00 ฿</p>
+                            <span class="text-[11px] text-slate-400">จากคำสั่งซื้อสำเร็จ</span>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-sky-200 space-y-1 shadow-2xs">
+                            <span class="text-xs text-slate-500">ยอดเติมเงินเข้าระบบ</span>
+                            <p id="adminSummaryTopup" class="font-cute text-xl sm:text-2xl font-bold text-sky-500">0.00 ฿</p>
+                            <span class="text-[11px] text-slate-400">สลิปผ่าน API ทั้งหมด</span>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-pink-200 space-y-1 shadow-2xs">
+                            <span class="text-xs text-slate-500">จำนวนออเดอร์สำเร็จ</span>
+                            <p id="adminSummaryOrderCount" class="font-cute text-xl sm:text-2xl font-bold text-slate-800">0 รายการ</p>
+                            <span class="text-[11px] text-slate-400">ส่งมอบอัตโนมัติ</span>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-sky-200 space-y-1 shadow-2xs">
+                            <span class="text-xs text-slate-500">ยอดเฉลี่ยต่อบิล</span>
+                            <p id="adminSummaryAvgOrder" class="font-cute text-xl sm:text-2xl font-bold text-emerald-500">0.00 ฿</p>
+                            <span class="text-[11px] text-slate-400">Average Order Value</span>
+                        </div>
+                    </div>
+
+                    <!-- สรุปยอดขายแยกตามหมวดหมู่ & สินค้าขายดี -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded-3xl border border-pink-200 space-y-3 shadow-2xs">
+                            <h5 class="font-cute font-bold text-sm text-pink-500">ยอดขายแยกตามหมวดหมู่แพลตฟอร์ม</h5>
+                            <div id="adminCategorySalesList" class="space-y-2.5 text-xs">
+                                <!-- สร้างกราฟแท่งสรุปหมวดหมู่ด้วย JS -->
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-3xl border border-sky-200 space-y-3 shadow-2xs">
+                            <h5 class="font-cute font-bold text-sm text-sky-500">ประวัติการเติมเงินผ่านสลิปล่าสุด</h5>
+                            <div id="adminTopupLogsList" class="space-y-2 text-xs max-h-52 overflow-y-auto">
+                                <p class="text-slate-400 text-center py-6">ยังไม่มีรายการเติมเงินเข้ามาในขณะนี้ค่ะ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 1: จัดการสินค้า & สต็อก -->
+                <div id="adminTab-products" class="hidden space-y-6">
+                    <!-- ฟอร์มเพิ่ม/จัดการหมวดหมู่สินค้าได้เอง -->
+                    <div class="bg-white p-4 sm:p-5 rounded-3xl border border-sky-200 space-y-3 shadow-2xs">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <h4 class="font-cute font-bold text-base text-sky-600 flex items-center gap-1.5">
+                                <i data-lucide="folder-plus" class="w-4 h-4"></i>
+                                <span>จัดการหมวดหมู่สินค้า (เพิ่มหมวดหมู่ได้เอง)</span>
+                            </h4>
+                            <span class="text-[11px] text-slate-400">แสดงปุ่มหมวดหมู่ที่หน้าร้านทันที</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-2.5 text-xs sm:text-sm">
+                            <input type="text" id="newCategoryNameInput" placeholder="พิมพ์ชื่อหมวดหมู่ใหม่ เช่น TikTok, YouTube, Netflix..." class="flex-1 px-3.5 py-2 rounded-xl bg-sky-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
+                            <button type="button" onclick="adminAddCategory()" class="btn-cute-blue bg-sky-500 text-white font-medium py-2 px-5 rounded-xl text-xs sm:text-sm cursor-pointer inline-flex items-center justify-center gap-1.5 shrink-0">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                <span>เพิ่มหมวดหมู่</span>
+                            </button>
+                        </div>
+                        <div id="adminCategoryTagsList" class="flex flex-wrap gap-2 pt-1">
+                            <!-- แสดงแท็กหมวดหมู่ทั้งหมดด้วย JS -->
+                        </div>
+                    </div>
+
+                    <!-- ฟอร์มเพิ่มสินค้าใหม่ -->
+                    <div class="bg-white p-4 sm:p-5 rounded-3xl border border-pink-200 space-y-3 shadow-2xs">
+                        <h4 class="font-cute font-bold text-base text-pink-500 flex items-center gap-1.5">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            <span>เพิ่มสินค้าใหม่ (แสดงรูปภาพและราคาหน้าร้าน)</span>
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs sm:text-sm">
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">ชื่อสินค้า <span class="text-pink-500">*</span></label>
+                                <input type="text" id="newProdName" placeholder="เช่น บัญชีเขียว Facebook พร้อมใช้งาน" class="w-full px-3.5 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">หมวดหมู่</label>
+                                <select id="newProdCat" class="w-full px-3.5 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                                    <!-- ตัวเลือกหมวดหมู่ถูกสร้างอัตโนมัติ -->
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">ราคา (บาท) <span class="text-pink-500">*</span></label>
+                                <input type="number" id="newProdPrice" placeholder="129" class="w-full px-3.5 py-2 rounded-xl bg-pink-50/50 text-sky-600 font-semibold border border-pink-200 focus:outline-none focus:border-sky-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">สต็อกเริ่มต้น (ชิ้น)</label>
+                                <input type="number" id="newProdStock" value="0" min="0" class="w-full px-3.5 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">ป้ายย่อ (เช่น FB / IG / X / MAIL)</label>
+                                <input type="text" id="newProdEmoji" placeholder="FB" class="w-full px-3.5 py-2 rounded-xl bg-pink-50/50 text-pink-600 border border-pink-200 focus:outline-none focus:border-sky-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">ลิงก์รูปภาพสินค้า (URL)</label>
+                                <input type="url" id="newProdImgUrl" placeholder="https://..." class="w-full px-3.5 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs text-slate-500 mb-1">รายละเอียดสินค้า</label>
+                                <input type="text" id="newProdDesc" placeholder="รายละเอียดสั้นๆ เช่น พร้อมใช้งานทันที มีรับประกัน..." class="w-full px-3.5 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">หรืออัปโหลดรูปภาพสินค้า</label>
+                                <input type="file" id="newProdImgFile" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-pink-100 file:text-pink-600 cursor-pointer">
+                            </div>
+                        </div>
+                        <div class="pt-1 text-right">
+                            <button onclick="adminAddProduct()" class="btn-cute bg-pink-500 text-white font-medium py-2 px-5 rounded-xl text-xs sm:text-sm cursor-pointer inline-flex items-center gap-1.5">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                <span>เพิ่มสินค้าเข้าหน้าร้าน</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- รายการสินค้าที่มีอยู่ -->
+                    <div class="space-y-2.5">
+                        <h4 class="font-cute font-bold text-base text-sky-600">รายการสินค้าทั้งหมดในร้าน</h4>
+                        <div id="adminProductList" class="space-y-2"></div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: สต็อกบัญชี & ลิงก์อ่านเมล -->
+                <div id="adminTab-mailLinks" class="hidden space-y-6">
+                    <!-- ปุ่มสลับฟอร์ม เติมสต็อกแอค / เติมสต็อก Hotmail -->
+                    <div class="flex gap-2 bg-pink-100/70 p-1.5 rounded-2xl border border-pink-200">
+                        <button type="button" id="stockTypeSocialBtn" onclick="switchStockFormType('social')" class="flex-1 py-2 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-pink-500 text-white transition cursor-pointer">
+                            เติมสต็อกแอค (FB / IG / X)
+                        </button>
+                        <button type="button" id="stockTypeHotmailBtn" onclick="switchStockFormType('hotmail')" class="flex-1 py-2 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 hover:text-sky-600 transition cursor-pointer">
+                            เติมสต็อก Hotmail (พร้อมลิงก์อ่านเมล)
+                        </button>
+                    </div>
+
+                    <!-- ฟอร์ม 1: การเติมสต็อกแอค -->
+                    <div id="formStockSocial" class="bg-white p-4 sm:p-5 rounded-3xl border border-pink-200 space-y-3 shadow-2xs">
+                        <h4 class="font-cute font-bold text-base text-pink-500 flex items-center gap-1.5">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i>
+                            <span>เติมสต็อกบัญชีแอค (Facebook / Instagram / X)</span>
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs text-slate-500 mb-1">เลือกสินค้าที่จะเติมสต็อก</label>
+                                <select id="socialStockProdId" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">อีเมล / User <span class="text-pink-500">*</span></label>
+                                <input type="text" id="socialStockEmail" placeholder="กรอกอีเมลหรือไอดีบัญชี" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">รหัสผ่าน <span class="text-pink-500">*</span></label>
+                                <input type="text" id="socialStockPass" placeholder="กรอกรหัสผ่านบัญชี" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">2FA (ไม่มีไม่ต้องใส่)</label>
+                                <input type="text" id="socialStock2fa" placeholder="โค้ด 2FA (ไม่มีเว้นว่างได้)" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-sky-600 border border-pink-200 focus:outline-none focus:border-sky-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">ลิงก์เฟส หรือ ลิงก์แอค</label>
+                                <input type="url" id="socialStockLink" placeholder="https://www.facebook.com/..." class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-sky-600 border border-pink-200 focus:outline-none focus:border-sky-400">
+                            </div>
+                        </div>
+                        <div class="pt-1 flex items-center justify-between gap-2">
+                            <span class="text-[11px] text-slate-500">* ระบบจะเพิ่มจำนวนสต็อกสินค้าให้อัตโนมัติ +1 ชิ้น</span>
+                            <button onclick="adminAddSocialStock()" class="btn-cute bg-pink-500 text-white font-medium py-2 px-5 rounded-xl text-xs sm:text-sm cursor-pointer inline-flex items-center gap-1.5">
+                                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                                <span>บันทึกเติมสต็อกแอค</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ฟอร์ม 2: การเติมสต็อก Hotmail -->
+                    <div id="formStockHotmail" class="hidden bg-white p-4 sm:p-5 rounded-3xl border border-sky-200 space-y-3 shadow-2xs">
+                        <h4 class="font-cute font-bold text-base text-sky-600 flex items-center gap-1.5">
+                            <i data-lucide="mail-plus" class="w-4 h-4"></i>
+                            <span>เติมสต็อก Hotmail (พร้อมโค้ดและลิงก์อ่านเมล)</span>
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs text-slate-500 mb-1">เลือกสินค้า Hotmail ที่จะเติมสต็อก</label>
+                                <select id="hotmailStockProdId" class="w-full px-3.5 py-2.5 rounded-xl bg-sky-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">อีเมล Hotmail <span class="text-sky-500">*</span></label>
+                                <input type="text" id="hotmailStockEmail" placeholder="เช่น mumu01@hotmail.com" class="w-full px-3.5 py-2.5 rounded-xl bg-sky-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">รหัสผ่าน <span class="text-sky-500">*</span></label>
+                                <input type="text" id="hotmailStockPass" placeholder="กรอกรหัสผ่านอีเมล" class="w-full px-3.5 py-2.5 rounded-xl bg-sky-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">โค้ดอ่านเมล (ไม่มีไม่ต้องใส่)</label>
+                                <input type="text" id="hotmailStockCode" placeholder="กรอกโค้ดอ่านเมล (ไม่มีเว้นว่างได้)" class="w-full px-3.5 py-2.5 rounded-xl bg-sky-50/50 text-pink-600 border border-sky-200 focus:outline-none focus:border-pink-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">ลิงก์อ่านเมล <span class="text-sky-500">*</span></label>
+                                <input type="url" id="hotmailStockReadUrl" placeholder="https://readmail.kaimail.shop/..." class="w-full px-3.5 py-2.5 rounded-xl bg-sky-50/50 text-sky-600 border border-sky-200 focus:outline-none focus:border-pink-400">
+                            </div>
+                        </div>
+                        <div class="pt-1 flex items-center justify-between gap-2">
+                            <span class="text-[11px] text-slate-500">* ระบบจะเพิ่มจำนวนสต็อกสินค้าให้อัตโนมัติ +1 ชิ้น</span>
+                            <button onclick="adminAddHotmailStock()" class="btn-cute-blue bg-sky-500 text-white font-medium py-2 px-5 rounded-xl text-xs sm:text-sm cursor-pointer inline-flex items-center gap-1.5">
+                                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                                <span>บันทึกเติมสต็อก Hotmail</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        <h4 class="font-cute font-bold text-base text-pink-500">รายการสต็อกบัญชี & ลิงก์อ่านเมลทั้งหมดในคลัง</h4>
+                        <div id="adminMailAccountList" class="space-y-2">
+                            <!-- แสดงรายการลิงก์อ่านเมลผ่าน JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: ตั้งค่าข้อมูลร้าน -->
+                <div id="adminTab-settings" class="hidden space-y-4">
+                    <div class="bg-white p-5 rounded-3xl border border-sky-200 space-y-4 text-sm shadow-2xs">
+                        <h4 class="font-cute font-bold text-base text-sky-600">ตั้งค่าการแสดงผลหน้าร้าน</h4>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">ชื่อร้านค้า</label>
+                                <input type="text" id="settingStoreName" value="Mumu Store" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">ลิงก์รูปภาพโลโก้ร้าน (URL)</label>
+                                <input type="text" id="settingStoreLogoUrl" value="https://i.ibb.co/Gv5DV83j/IMG-4109.png" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">ข้อความแถบประกาศด้านบนสุด</label>
+                            <input type="text" id="settingAnnouncement" value="ยินดีต้อนรับสู่ Mumu Store ระบบอัตโนมัติ 24 ชม. เติมเงินปุ๊บ รับรหัสและลิงก์อ่านเมลทันที" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">คำอธิบายต้อนรับหน้าแรก</label>
+                            <textarea id="settingHeroDesc" rows="2" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">ศูนย์รวมบัญชี Facebook, Instagram, X (Twitter) และ Hotmail คุณภาพสูง พร้อมใช้งานทันที มีระบบอ่านเมลยืนยันอัตโนมัติ ตลอด 24 ชม.</textarea>
+                        </div>
+
+                        <div class="flex items-center justify-between bg-pink-50/70 p-3.5 rounded-2xl border border-pink-200">
+                            <div>
+                                <p class="font-semibold text-slate-800 text-xs sm:text-sm">สถานะเปิด-ปิดร้านค้า</p>
+                                <p class="text-[11px] text-slate-500">แสดงป้ายสถานะความพร้อมให้บริการที่หน้าแรก</p>
+                            </div>
+                            <select id="settingStoreStatus" class="px-3 py-1.5 rounded-xl border border-sky-200 bg-white text-xs sm:text-sm font-medium text-slate-800">
+                                <option value="open">เปิดให้บริการ 24 ชม.</option>
+                                <option value="maintenance">ปรับปรุงระบบชั่วคราว</option>
+                            </select>
+                        </div>
+
+                        <!-- ตั้งค่าระบบรับเงิน & QR Code -->
+                        <div class="pt-3 border-t border-pink-200 space-y-3">
+                            <h5 class="font-cute font-bold text-sm text-pink-500">ตั้งค่าระบบรับเงิน & QR Code พร้อมเพย์</h5>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-500 mb-1">ชื่อบัญชีรับเงิน (ใช้ตรวจสอบสลิป)</label>
+                                    <input type="text" id="settingAccountName" value="ชรินพัชร เพชรสวน เท่านั้น" placeholder="เช่น ชรินพัชร เพชรสวน เท่านั้น" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-500 mb-1">อัปโหลดรูปภาพ QR Code ใหม่ (จากเครื่อง)</label>
+                                    <input type="file" id="settingQrFileUpload" accept="image/*" onchange="handleAdminQrUpload(event)" class="w-full text-xs text-slate-500 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-sky-100 file:text-sky-600 hover:file:bg-sky-200 cursor-pointer">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">หรือใส่ลิงก์รูปภาพ QR Code (URL)</label>
+                                <input type="text" id="settingCustomQrUrl" value="GEM_PHOTO_FE0499BF-6BFE-4A24-A0E6-BADEC81CABC1_L0_001_recent_photo_FF91FAD7-75D6-47D0-8AB8-68705F362DCF.jpg" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
+                            </div>
+                        </div>
+
+                        <!-- ตั้งค่า API ตรวจสอบสลิปธนาคาร -->
+                        <div class="pt-3 border-t border-sky-200 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h5 class="font-cute font-bold text-sm text-sky-600">ตั้งค่า API ตรวจสอบสลิปอัตโนมัติ (Slip Verification API)</h5>
+                                <span class="text-[11px] text-slate-400">รองรับ SlipOK / EasySlip / Custom REST API</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-500 mb-1">โหมดการทำงานของ API</label>
+                                    <select id="settingSlipApiMode" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400 text-xs sm:text-sm">
+                                        <option value="live">เชื่อมต่อ API จริง (Live Endpoint)</option>
+                                        <option value="sandbox">โหมดทดสอบ API (Sandbox Simulation)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-500 mb-1">ผู้ให้บริการ (Provider Format)</label>
+                                    <select id="settingSlipApiProvider" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400 text-xs sm:text-sm">
+                                        <option value="slipok">SlipOK API (Multipart / JSON)</option>
+                                        <option value="easyslip">EasySlip API (Bearer Token)</option>
+                                        <option value="custom">Custom Webhook / REST API</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-500 mb-1">API Endpoint URL</label>
+                                    <input type="url" id="settingSlipApiUrl" placeholder="https://api.slipok.com/api/line/apikey/XXXX" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-sky-600 border border-sky-200 focus:outline-none focus:border-pink-400 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-500 mb-1">API Key / Authorization Token</label>
+                                    <input type="password" id="settingSlipApiKey" placeholder="กรอกคีย์ API ของคุณ (เช่น SLIPOK-XXXX)" class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-pink-600 border border-sky-200 focus:outline-none focus:border-pink-400 text-xs">
+                                </div>
+                            </div>
+                            <label class="flex items-center gap-2.5 bg-pink-50/70 p-3 rounded-2xl border border-pink-200 cursor-pointer text-xs text-slate-700">
+                                <input type="checkbox" id="settingVerifyReceiverName" checked class="accent-pink-500 w-4 h-4 rounded">
+                                <span>บังคับตรวจสอบชื่อบัญชีผู้รับเงินในสลิปต้องตรงกับ <b class="text-pink-600">"ชรินพัชร เพชรสวน"</b> และป้องกันสลิปซ้ำอัตโนมัติ</span>
+                            </label>
+                        </div>
+
+                        <!-- ตั้งค่าเชื่อมต่อฐานข้อมูลถาวร Google Sheets (Apps Script Web App URL) -->
+                        <div class="pt-3 border-t border-pink-200 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-1">
+                                <h5 class="font-cute font-bold text-sm text-emerald-600 flex items-center gap-1.5">
+                                    <i data-lucide="database" class="w-4 h-4"></i>
+                                    <span>เชื่อมต่อฐานข้อมูลถาวร Google Sheets (Apps Script)</span>
+                                </h5>
+                                <span id="gsSyncStatusBadge" class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200 font-medium">ยังไม่ได้เชื่อมต่อชีต</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 leading-relaxed">
+                                นำลิงก์ Web App URL (ลงท้ายด้วย <code class="text-pink-600 font-mono">/exec</code>) จาก Google Apps Script มาวางที่นี่ เพื่อให้ข้อมูลสินค้า สต็อก สมาชิก และยอดขายบันทึกลง Google Sheets ถาวรข้ามเครื่อง
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="url" id="settingGoogleScriptUrl" placeholder="https://script.google.com/macros/s/XXXXX/exec" class="flex-1 px-3.5 py-2.5 rounded-xl bg-emerald-50/40 text-emerald-700 border border-emerald-200 focus:outline-none focus:border-pink-400 text-xs font-mono">
+                                <button type="button" onclick="syncFromGoogleSheet(true)" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold cursor-pointer shrink-0 flex items-center justify-center gap-1.5">
+                                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                                    <span>ดึงข้อมูลจากชีต</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 text-right">
+                            <button onclick="saveStoreSettings()" class="btn-cute-blue bg-sky-500 text-white font-medium py-2.5 px-6 rounded-2xl text-sm cursor-pointer inline-flex items-center gap-1.5">
+                                <i data-lucide="save" class="w-4 h-4"></i>
+                                <span>บันทึกการตั้งค่าร้าน</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: ประวัติการสั่งซื้อทั้งหมด (Admin) -->
+                <div id="adminTab-orders" class="hidden space-y-3">
+                    <h4 class="font-cute font-bold text-base text-pink-500">รายการสั่งซื้อทั้งหมดในระบบ</h4>
+                    <div id="adminOrderList" class="space-y-2 text-xs">
+                        <div class="text-center py-8 text-slate-400 bg-white rounded-2xl border border-dashed border-sky-200">
+                            ยังไม่มีรายการสั่งซื้อเข้ามาในขณะนี้ค่ะ
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal ประวัติการสั่งซื้อ & ประวัติการเติมเงินสำหรับลูกค้า -->
+    <div id="customerHistoryModal" class="fixed inset-0 bg-pink-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-3 sm:p-6">
+        <div class="bg-[#FFF5F8] rounded-[2rem] max-w-2xl w-full max-h-[88vh] flex flex-col border-2 border-pink-300 shadow-2xl shadow-pink-300/40 overflow-hidden text-slate-800">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-pink-400 via-pink-500 to-sky-400 px-6 py-4 text-white flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 bg-white/25 rounded-xl flex items-center justify-center">
+                        <i data-lucide="history" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-cute font-bold text-lg leading-tight">ประวัติการใช้งานของฉัน</h3>
+                        <p class="text-[11px] text-white/90">ตรวจสอบรหัสสินค้าที่ซื้อย้อนหลัง และประวัติการเติมเงิน</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('customerHistoryModal')" class="w-8 h-8 rounded-full bg-white/25 hover:bg-white/40 flex items-center justify-center text-white cursor-pointer">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- สลับแท็บ ประวัติการสั่งซื้อ / ประวัติการเติมเงิน -->
+            <div class="bg-pink-100/70 px-6 py-2.5 border-b border-pink-200 grid grid-cols-2 gap-2 shrink-0">
+                <button id="custHistOrdersBtn" onclick="switchCustomerHistoryTab('orders')" class="py-2 rounded-xl text-xs sm:text-sm font-semibold bg-pink-500 text-white transition cursor-pointer">
+                    ประวัติการสั่งซื้อ (<span id="custOrderCountBadge">0</span>)
+                </button>
+                <button id="custHistTopupsBtn" onclick="switchCustomerHistoryTab('topups')" class="py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-pink-200 hover:border-sky-400 transition cursor-pointer">
+                    ประวัติการเติมเงิน (<span id="custTopupCountBadge">0</span>)
+                </button>
+            </div>
+
+            <!-- เนื้อหารายการ -->
+            <div class="p-5 overflow-y-auto flex-1 space-y-3">
+                <div id="custHistoryOrdersList" class="space-y-3"></div>
+                <div id="custHistoryTopupsList" class="hidden space-y-2.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal ยืนยันรหัสผ่านเข้าสู่ระบบหลังบ้าน (Admin Login Gate) -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-pink-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-[#FFF5F8] rounded-[2rem] max-w-sm w-full p-6 sm:p-7 border-2 border-pink-300 shadow-2xl shadow-pink-300/40 space-y-5 relative text-slate-800">
+            <button onclick="closeModal('adminLoginModal')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center hover:bg-pink-200 cursor-pointer">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+
+            <div class="text-center space-y-1.5">
+                <div class="w-14 h-14 rounded-2xl bg-pink-100 border-2 border-pink-300 text-pink-500 mx-auto flex items-center justify-center shadow-sm">
+                    <i data-lucide="lock" class="w-7 h-7"></i>
+                </div>
+                <h3 class="font-cute text-xl font-bold bg-gradient-to-r from-pink-500 to-sky-500 bg-clip-text text-transparent">เข้าสู่ระบบหลังบ้าน</h3>
+                <p class="text-xs text-slate-500">กรุณากรอกรหัสผ่านผู้ดูแลระบบเพื่อจัดการร้านค้า</p>
+            </div>
+
+            <form onsubmit="verifyAdminPassword(event)" class="space-y-3.5 text-xs sm:text-sm">
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">รหัสผ่านหลังบ้าน (Admin Password)</label>
+                    <input type="password" id="adminPasswordInput" required placeholder="กรอกรหัสผ่านผู้ดูแลระบบ" class="w-full px-4 py-2.5 rounded-xl bg-white text-slate-800 border-2 border-pink-200 focus:outline-none focus:border-sky-400 text-center tracking-wider">
+                </div>
+                <button type="submit" class="w-full btn-cute bg-pink-500 text-white py-2.5 rounded-2xl text-sm font-semibold cursor-pointer flex items-center justify-center gap-1.5">
+                    <i data-lucide="unlock" class="w-4 h-4"></i>
+                    <span>เข้าสู่ระบบหลังบ้าน</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal สมัครสมาชิก & เข้าสู่ระบบ (Register / Login) -->
+    <div id="authModal" class="fixed inset-0 bg-pink-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-[#FFF5F8] rounded-[2rem] max-w-md w-full p-6 sm:p-7 border-2 border-pink-300 shadow-2xl shadow-pink-300/40 space-y-5 relative text-slate-800">
+            <button onclick="closeModal('authModal')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center hover:bg-pink-200 cursor-pointer">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+
+            <!-- หัวข้อ Modal -->
+            <div class="text-center space-y-1">
+                <div class="w-14 h-14 rounded-full bg-white border-2 border-pink-400 mx-auto flex items-center justify-center overflow-hidden shadow-md">
+                    <img src="https://i.ibb.co/Gv5DV83j/IMG-4109.png" alt="Mumu Store" class="w-full h-full object-cover">
+                </div>
+                <h3 id="authModalTitle" class="font-cute text-2xl font-bold bg-gradient-to-r from-pink-500 to-sky-500 bg-clip-text text-transparent">สมัครสมาชิกใหม่</h3>
+                <p id="authModalSubtitle" class="text-xs text-slate-500">สมัครสมาชิกฟรี เพื่อสะสมเครดิตและรับรหัสอัตโนมัติ 24 ชม.</p>
+            </div>
+
+            <!-- สลับแท็บ สมัครสมาชิก / เข้าสู่ระบบ -->
+            <div class="grid grid-cols-2 gap-1.5 bg-pink-100/80 p-1 rounded-2xl border border-pink-200">
+                <button type="button" id="tabRegisterBtn" onclick="switchAuthMode('register')" class="py-2 rounded-xl text-xs sm:text-sm font-semibold bg-pink-500 text-white transition cursor-pointer">
+                    สมัครสมาชิก
+                </button>
+                <button type="button" id="tabLoginBtn" onclick="switchAuthMode('login')" class="py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-sky-600 transition cursor-pointer">
+                    เข้าสู่ระบบ
+                </button>
+            </div>
+
+            <!-- ฟอร์มสมัครสมาชิก -->
+            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3 text-xs sm:text-sm">
+                <div>
+                    <label class="block text-xs text-slate-600 mb-1">ชื่อผู้ใช้ (Username)</label>
+                    <input type="text" id="regUsername" required placeholder="ตั้งชื่อผู้ใช้ภาษาอังกฤษหรือตัวเลข" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-600 mb-1">อีเมล (Email)</label>
+                    <input type="email" id="regEmail" required placeholder="example@hotmail.com" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-xs text-slate-600 mb-1">รหัสผ่าน</label>
+                        <input type="password" id="regPassword" required placeholder="รหัสผ่าน" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-600 mb-1">ยืนยันรหัสผ่าน</label>
+                        <input type="password" id="regConfirmPassword" required placeholder="ยืนยันอีกครั้ง" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                    </div>
+                </div>
+                <button type="submit" class="w-full btn-cute bg-pink-500 text-white py-2.5 rounded-2xl text-sm font-semibold cursor-pointer">
+                    ยืนยันการสมัครสมาชิก
+                </button>
+            </form>
+
+            <!-- ฟอร์มเข้าสู่ระบบ -->
+            <form id="loginForm" onsubmit="handleLogin(event)" class="hidden space-y-3.5 text-xs sm:text-sm">
+                <div>
+                    <label class="block text-xs text-slate-600 mb-1">ชื่อผู้ใช้ หรือ อีเมล</label>
+                    <input type="text" id="loginIdentifier" required placeholder="กรอกชื่อผู้ใช้หรืออีเมลของคุณ" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-600 mb-1">รหัสผ่าน (Password)</label>
+                    <input type="password" id="loginPassword" required placeholder="กรอกรหัสผ่าน" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
+                </div>
+                <button type="submit" class="w-full btn-cute-blue bg-sky-500 text-white py-2.5 rounded-2xl text-sm font-semibold cursor-pointer">
+                    เข้าสู่ระบบ Mumu Store
+                </button>
+                <p class="text-center text-xs text-slate-500">
+                    ยังไม่มีบัญชีใช่ไหม? <button type="button" onclick="switchAuthMode('register')" class="text-pink-500 underline font-semibold cursor-pointer">สมัครสมาชิกที่นี่</button>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification แจ้งเตือน -->
+    <div id="toast" class="fixed bottom-5 right-5 z-[60] transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-white/95 backdrop-blur-md text-slate-800 border-2 border-pink-300 px-4 py-3 rounded-2xl shadow-xl shadow-pink-200/60 flex items-center gap-2.5 text-xs sm:text-sm max-w-sm">
+            <span class="w-2.5 h-2.5 rounded-full bg-pink-500 shrink-0"></span>
+            <span id="toastMessage" class="font-medium leading-snug">แจ้งเตือนระบบ</span>
+        </div>
+    </div>
+
+    <script>
+        // รายการหมวดหมู่สินค้า (แอดมินสามารถเพิ่ม-ลบเองได้)
+        let categoriesData = [
+            { key: 'facebook', label: 'Facebook' },
+            { key: 'instagram', label: 'Instagram' },
+            { key: 'twitter', label: 'ทวิต' },
+            { key: 'hotmail', label: 'Hotmail' },
+            { key: 'gmail', label: 'Gmail' },
+            { key: 'website', label: 'เว็บไซต์' }
+        ];
+
+        // ข้อมูลสินค้าเริ่มต้น (เพิ่มรายการหมวดหมู่เว็บไซต์ 4 รายการ)
+        let productsData = [
+            {
+                id: 101,
+                category: 'website',
+                name: 'เว็บร้านค้า พร้อมระบบหลังบ้าน',
+                desc: 'แพ็กเกจเริ่มต้น เว็บร้านค้าออนไลน์ดีไซน์น่ารัก พร้อมระบบหลังบ้านจัดการสินค้าและสต็อก',
+                price: 129,
+                stock: 5,
+                badge: 'เว็บไซต์แนะนำ',
+                bgGradient: 'from-pink-100 via-white to-sky-100',
+                emoji: 'WEB 129',
+                imageUrl: 'https://placehold.co/400x220/FFE4E6/FB7185?text=Web+Store+129%E0%B8%BF'
+            },
+            {
+                id: 102,
+                category: 'website',
+                name: 'เว็บร้านค้า พร้อมระบบหลังบ้าน',
+                desc: 'แพ็กเกจพรีเมียม ฟังก์ชันครบครัน ระบบเติมเงิน QR Code ตรวจสลิปอัตโนมัติ และหลังบ้านเต็มรูปแบบ',
+                price: 159,
+                stock: 5,
+                badge: 'ขายดี',
+                bgGradient: 'from-sky-100 via-white to-pink-100',
+                emoji: 'WEB 159',
+                imageUrl: 'https://placehold.co/400x220/E0F2FE/0284C7?text=Web+Store+159%E0%B8%BF'
+            },
+            {
+                id: 103,
+                category: 'website',
+                name: 'เว็บเก็บเครดิต',
+                desc: 'ระบบเว็บไซต์สะสมและเก็บเครดิตลูกค้า ใช้งานง่าย โหลดไว ปรับแต่งสีและข้อความได้ตามต้องการ',
+                price: 59,
+                stock: 5,
+                badge: 'ราคาประหยัด',
+                bgGradient: 'from-pink-100 via-white to-sky-100',
+                emoji: 'CREDIT 59',
+                imageUrl: 'https://placehold.co/400x220/FFE4E6/EC4899?text=Web+Credit+59%E0%B8%BF'
+            },
+            {
+                id: 104,
+                category: 'website',
+                name: 'เว็บป้ายบัญชี',
+                desc: 'หน้าเว็บป้ายรวมช่องทางการโอนเงิน พร้อมแสดง QR Code และปุ่มคัดลอกเลขบัญชีในคลิกเดียว',
+                price: 69,
+                stock: 5,
+                badge: 'ยอดนิยม',
+                bgGradient: 'from-sky-100 via-white to-pink-100',
+                emoji: 'ACCOUNT 69',
+                imageUrl: 'https://placehold.co/400x220/E0F2FE/38BDF8?text=Web+Account+69%E0%B8%BF'
+            }
+        ];
+
+        // คลังสต็อกบัญชีแยกตามประเภท: social (แอค) และ hotmail (ตั้งค่าเริ่มต้นเป็น 0)
+        let mailAccountsPool = [];
+
+        // ข้อมูลรีวิวลูกค้า
+        let reviewsData = [
+            {
+                avatar: 'AGENT',
+                name: 'น้องมิ้นท์ (ตัวแทน)',
+                product: 'สั่งซื้อ Facebook บัญชีเขียว',
+                stars: 5,
+                comment: 'เว็บน่ารักมาก กดซื้อปุ๊บได้รหัสทันทีเลย มีลิงก์กดเข้าไปอ่านเมลรับ OTP ให้ด้วย สะดวกสุดๆ ค่ะ',
+                theme: 'pink'
+            },
+            {
+                avatar: 'VIP',
+                name: 'คุณบีม @beamshop',
+                product: 'สั่งซื้อ Hotmail คุณภาพสูง',
+                stars: 5,
+                comment: 'เติมเงินผ่าน QR สแกนแป๊บเดียวยอดเข้าเลย เมลสะอาดใช้งานได้จริงทุกบัญชี แนะนำร้านนี้เลยครับ',
+                theme: 'sky'
+            },
+            {
+                avatar: 'BUYER',
+                name: 'คุณพลอยใส',
+                product: 'สั่งซื้อ Instagram บัญชีเก่า',
+                stars: 5,
+                comment: 'แอดมินบริการดี ระบบอัตโนมัติ 24 ชม. จริงๆ ซื้อตอนตี 3 ก็ได้ของเลย ไม่ต้องรอนาน',
+                theme: 'pink'
+            }
+        ];
+        let selectedReviewStars = 5;
+
+        // ข้อมูลการรับเงิน & QR Code
+        let paymentConfig = {
+            accountName: 'ชรินพัชร เพชรสวน เท่านั้น',
+            customQrUrl: 'GEM_PHOTO_FE0499BF-6BFE-4A24-A0E6-BADEC81CABC1_L0_001_recent_photo_FF91FAD7-75D6-47D0-8AB8-68705F362DCF.jpg',
+            apiMode: 'sandbox',
+            apiProvider: 'slipok',
+            apiUrl: '',
+            apiKey: '',
+            verifyReceiverName: true
+        };
+
+        // เก็บเลขอ้างอิงสลิป (TransRef) ที่เคยใช้แล้วเพื่อป้องกันสลิปซ้ำ
+        let usedSlipRefs = new Set();
+        let slipVerifyLogs = [];
+
+        // รหัสผ่านเข้าสู่ระบบหลังบ้าน
+        let adminPassword = 'dowyoo45';
+        let isAdminAuthenticated = false;
+
+        let orderHistory = [];
+        let userBalance = 0.00;
+        let currentUser = null;
+        let registeredUsers = [];
+        let totalSold = 0;
+        let currentFilter = 'all';
+
+        // แสดงปุ่มหมวดหมู่หน้าร้าน + ซิงค์ตัวเลือกในหลังบ้าน
+        function renderCategories() {
+            const filterContainer = document.getElementById('categoryFilters');
+            if (filterContainer) {
+                const allBtnClass = currentFilter === 'all'
+                    ? 'cat-btn active px-4 py-2 rounded-full text-xs sm:text-sm font-medium bg-pink-500 text-white shadow-sm cursor-pointer'
+                    : 'cat-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium bg-white text-slate-600 border border-pink-200 hover:border-sky-400 hover:text-sky-600 cursor-pointer';
+
+                let html = `<button onclick="filterCategory('all', this)" class="${allBtnClass}">ทั้งหมด</button>`;
+                html += categoriesData.map(cat => {
+                    const isActive = currentFilter === cat.key;
+                    const btnClass = isActive
+                        ? 'cat-btn active px-4 py-2 rounded-full text-xs sm:text-sm font-medium bg-pink-500 text-white shadow-sm cursor-pointer'
+                        : 'cat-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium bg-white text-slate-600 border border-pink-200 hover:border-sky-400 hover:text-sky-600 cursor-pointer';
+                    return `<button onclick="filterCategory('${cat.key}', this)" class="${btnClass}">${cat.label}</button>`;
+                }).join('');
+                filterContainer.innerHTML = html;
+            }
+
+            // ซิงค์ Select หมวดหมู่ในฟอร์มเพิ่มสินค้าหลังบ้าน
+            const prodCatSelect = document.getElementById('newProdCat');
+            if (prodCatSelect) {
+                const prevVal = prodCatSelect.value;
+                prodCatSelect.innerHTML = categoriesData.map(c => `<option value="${c.key}">${c.label}</option>`).join('');
+                if (prevVal && categoriesData.some(c => c.key === prevVal)) {
+                    prodCatSelect.value = prevVal;
+                }
+            }
+
+            // แสดงแท็กจัดการหมวดหมู่ในหลังบ้าน
+            const adminTagsList = document.getElementById('adminCategoryTagsList');
+            if (adminTagsList) {
+                adminTagsList.innerHTML = categoriesData.map(cat => `
+                    <span class="inline-flex items-center gap-1.5 bg-pink-50 border border-pink-200 text-pink-600 px-3 py-1 rounded-full text-xs font-medium">
+                        <span>${cat.label}</span>
+                        <button type="button" onclick="adminDeleteCategory('${cat.key}')" class="text-rose-400 hover:text-rose-600 font-bold ml-0.5 cursor-pointer" title="ลบหมวดหมู่">×</button>
+                    </span>
+                `).join('');
+            }
+        }
+
+        function adminAddCategory() {
+            const input = document.getElementById('newCategoryNameInput');
+            const label = input.value.trim();
+            if (!label) {
+                showToast('กรุณากรอกชื่อหมวดหมู่ก่อนกดเพิ่มนะคะ');
+                return;
+            }
+            const exists = categoriesData.some(c => c.label.toLowerCase() === label.toLowerCase());
+            if (exists) {
+                showToast(`มีหมวดหมู่ "${label}" อยู่ในระบบแล้วค่ะ`);
+                return;
+            }
+            const key = 'cat_' + Date.now();
+            categoriesData.push({ key, label });
+            input.value = '';
+            renderCategories();
+            const prodCatSelect = document.getElementById('newProdCat');
+            if (prodCatSelect) prodCatSelect.value = key;
+            syncToGoogleSheet();
+            showToast(`เพิ่มหมวดหมู่ "${label}" เรียบร้อยแล้วค่ะ`);
+        }
+
+        function adminDeleteCategory(key) {
+            if (categoriesData.length <= 1) {
+                showToast('ต้องมีหมวดหมู่สินค้าอย่างน้อย 1 หมวดหมู่ค่ะ');
+                return;
+            }
+            const target = categoriesData.find(c => c.key === key);
+            if (!target) return;
+            categoriesData = categoriesData.filter(c => c.key !== key);
+            if (currentFilter === key) {
+                currentFilter = 'all';
+            }
+            renderCategories();
+            renderProducts();
+            syncToGoogleSheet();
+            showToast(`ลบหมวดหมู่ "${target.label}" เรียบร้อยแล้วค่ะ`);
+        }
+
+        // แสดงรายการสินค้า
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const filtered = currentFilter === 'all'
+                ? productsData
+                : productsData.filter(p => p.category === currentFilter);
+
+            // อัปเดตสถิติหน้าร้าน
+            const totalMembersEl = document.getElementById('totalMembersDisplay');
+            const totalProdEl = document.getElementById('totalProductsDisplay');
+            const totalStockEl = document.getElementById('totalStockDisplay');
+            const totalSoldEl = document.getElementById('totalSoldDisplay');
+
+            if (totalMembersEl) totalMembersEl.innerHTML = `${registeredUsers.length.toLocaleString()} <span class="text-xs font-normal text-slate-500">คน</span>`;
+            if (totalProdEl) totalProdEl.innerHTML = `${productsData.length.toLocaleString()} <span class="text-xs font-normal text-slate-500">รายการ</span>`;
+            const sumStock = productsData.filter(p => p.category !== 'website').reduce((acc, item) => acc + item.stock, 0);
+            if (totalStockEl) totalStockEl.innerHTML = `${sumStock.toLocaleString()} <span class="text-xs font-normal text-slate-500">ชิ้น</span>`;
+            if (totalSoldEl) totalSoldEl.innerHTML = `${totalSold.toLocaleString()} <span class="text-xs font-normal text-slate-500">ครั้ง</span>`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-white/80 rounded-3xl border-2 border-dashed border-pink-200 space-y-2">
+                        <p class="font-cute text-lg font-bold text-slate-600">ยังไม่มีรายการสินค้าในหมวดหมู่นี้</p>
+                        <p class="text-xs text-slate-400">สามารถกดปุ่ม "หลังบ้าน" ด้านบนขวา เพื่อเพิ่มสินค้าและเติมสต็อกได้เลยค่ะ</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const isWebsite = item.category === 'website';
+                const isOutOfStock = !isWebsite && item.stock === 0;
+                const card = document.createElement('div');
+                card.className = 'card-cute bg-white/95 rounded-[1.75rem] p-5 flex flex-col justify-between shadow-sm relative overflow-hidden';
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="bg-pink-100 text-pink-600 border border-pink-200 text-[11px] font-bold px-3 py-1 rounded-full">
+                                ${item.badge}
+                            </span>
+                            <span class="text-xs font-medium ${isWebsite ? 'text-emerald-600 bg-emerald-50 border-emerald-200' : (isOutOfStock ? 'text-rose-500 bg-rose-50 border-rose-200' : 'text-sky-600 bg-sky-50 border-sky-200')} border px-2.5 py-1 rounded-full">
+                                ${isWebsite ? 'เปิดรับออเดอร์ • ส่งงานในไลน์' : (isOutOfStock ? 'สต็อกหมด' : `พร้อมส่ง ${item.stock} ชิ้น`)}
+                            </span>
+                        </div>
+                        <div class="w-full h-36 rounded-2xl bg-gradient-to-r ${item.bgGradient} border border-pink-200/70 flex items-center justify-center mb-4 overflow-hidden relative">
+                            ${item.imageUrl
+                                ? `<img src="${item.imageUrl}" alt="${item.name}" onerror="this.onerror=null; this.src='https://placehold.co/400x220/FFE4E6/FB7185?text=${encodeURIComponent(item.emoji)}';" class="w-full h-full object-cover">`
+                                : `<span class="font-cute font-bold text-2xl sm:text-3xl tracking-wider bg-gradient-to-r from-pink-500 to-sky-500 bg-clip-text text-transparent">${item.emoji}</span>`
+                            }
+                        </div>
+
+                        <h3 class="font-cute font-bold text-lg text-slate-800 mb-1">${item.name}</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-4">${item.desc}</p>
+                    </div>
+
+                    <div class="pt-3 border-t border-dashed border-pink-200 flex items-center justify-between gap-2">
+                        <div>
+                            <span class="text-[11px] text-slate-400 block">ราคา</span>
+                            <span class="font-cute text-xl font-bold text-pink-500">${item.price}.00 ฿</span>
+                        </div>
+
+                        <button onclick="buyProduct(${item.id})" ${isOutOfStock ? 'disabled' : ''}
+                            class="${isOutOfStock
+                                ? 'bg-slate-100 text-slate-400 cursor-not-allowed px-5 py-2.5 rounded-2xl text-sm font-medium'
+                                : 'btn-cute bg-pink-500 text-white px-5 py-2.5 rounded-2xl text-sm font-medium cursor-pointer'}">
+                            ${isOutOfStock ? 'สินค้าหมด' : 'สั่งซื้อเลย'}
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // กรองหมวดหมู่สินค้า
+        function filterCategory(category, btnElement) {
+            currentFilter = category;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-pink-500', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-slate-600', 'border', 'border-pink-200');
+            });
+            if (btnElement) {
+                btnElement.classList.remove('bg-white', 'text-slate-600', 'border', 'border-pink-200');
+                btnElement.classList.add('bg-pink-500', 'text-white', 'shadow-sm');
+            }
+            renderProducts();
+        }
+
+        // ซื้อสินค้า
+        function buyProduct(id) {
+            if (!currentUser) {
+                showToast('กรุณาสมัครสมาชิกหรือเข้าสู่ระบบก่อนสั่งซื้อสินค้านะคะ');
+                openAuthModal('register');
+                return;
+            }
+
+            const product = productsData.find(p => p.id === id);
+            if (!product) return;
+
+            // หากเป็นสินค้าหมวดหมู่เว็บไซต์ เปิดหน้าชำระเงิน + แนบสลิป + ส่งไอดีไลน์/QR ไลน์
+            if (product.category === 'website') {
+                openWebsiteOrderModal(product);
+                return;
+            }
+
+            if (product.stock <= 0) return;
+
+            if (userBalance < product.price) {
+                showToast(`ยอดเงินไม่เพียงพอ (ขาดอีก ${(product.price - userBalance).toFixed(2)} ฿) กรุณาเติมเงินก่อนนะคะ`);
+                openTopupModal();
+                return;
+            }
+
+            userBalance -= product.price;
+            if (currentUser) currentUser.balance = userBalance;
+            document.getElementById('userBalance').innerText = `${userBalance.toFixed(2)} ฿`;
+
+            product.stock -= 1;
+            totalSold += 1;
+            const totalSoldEl = document.getElementById('totalSoldDisplay');
+            if (totalSoldEl) {
+                totalSoldEl.innerHTML = `${totalSold.toLocaleString()} <span class="text-xs font-normal text-slate-500">ครั้ง</span>`;
+            }
+
+            // ดึงบัญชีพร้อมข้อมูลเฉพาะบุคคลจากคลัง (ถ้ามี)
+            const matchedMailAcc = mailAccountsPool.find(m => m.productId === product.id && m.status === 'available')
+                                || mailAccountsPool.find(m => m.status === 'available');
+
+            let accountEmail = `mumu_${Math.floor(1000 + Math.random() * 9000)}@hotmail.com`;
+            let accountPass = `Mumu#${Math.floor(100000 + Math.random() * 900000)}`;
+            let twoFA = '';
+            let accountLink = '';
+            let mailCode = '';
+            let readMailUrl = '';
+
+            if (matchedMailAcc) {
+                matchedMailAcc.status = 'sold';
+                accountEmail = matchedMailAcc.email;
+                accountPass = matchedMailAcc.password;
+                twoFA = matchedMailAcc.twoFA || '';
+                accountLink = matchedMailAcc.accountLink || '';
+                mailCode = matchedMailAcc.mailCode || '';
+                readMailUrl = matchedMailAcc.readMailUrl || '';
+            }
+
+            const orderId = `ORD-${Math.floor(10000 + Math.random() * 90000)}`;
+            const now = new Date();
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const dateStr = now.toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' });
+            orderHistory.unshift({
+                id: orderId,
+                buyer: currentUser ? currentUser.username : 'Guest',
+                category: product.category,
+                productName: product.name,
+                price: product.price,
+                account: accountEmail,
+                password: accountPass,
+                twoFA: twoFA,
+                mailCode: mailCode,
+                accountLink: accountLink,
+                readMailUrl: readMailUrl,
+                date: dateStr,
+                time: timeStr
+            });
+
+            // แสดงข้อมูลบัญชีและลิงก์หลังซื้อสำเร็จ
+            const content = document.getElementById('orderModalContent');
+            content.innerHTML = `
+                <div class="w-12 h-12 rounded-2xl bg-sky-100 border border-sky-200 text-sky-600 flex items-center justify-center mx-auto font-bold text-lg">
+                    OK
+                </div>
+                <h3 class="font-cute text-xl font-bold text-slate-800">สั่งซื้อสำเร็จแล้ว</h3>
+                <p class="text-xs text-slate-500">เลขที่คำสั่งซื้อ: <b class="text-sky-600">${orderId}</b></p>
+                <div class="bg-white p-4 rounded-2xl border border-pink-200 text-left space-y-2 text-xs shadow-2xs">
+                    <p><span class="text-slate-500">สินค้า:</span> <b class="text-slate-800">${product.name}</b></p>
+                    <p><span class="text-slate-500">Email / User:</span> <span class="text-pink-600 font-mono select-all font-semibold">${accountEmail}</span></p>
+                    <p><span class="text-slate-500">Password:</span> <span class="text-sky-600 font-mono select-all font-semibold">${accountPass}</span></p>
+                    ${twoFA ? `<p><span class="text-slate-500">2FA Code:</span> <span class="text-amber-600 font-mono select-all font-semibold">${twoFA}</span></p>` : ''}
+                    ${mailCode ? `<p><span class="text-slate-500">โค้ดอ่านเมล:</span> <span class="text-amber-600 font-mono select-all font-semibold">${mailCode}</span></p>` : ''}
+                    ${accountLink ? `
+                        <div class="pt-2 border-t border-pink-100">
+                            <p class="text-slate-500 mb-1.5">ลิงก์เฟส / ลิงก์บัญชีของคุณ:</p>
+                            <a href="${accountLink}" target="_blank" class="block w-full text-center bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-3 rounded-xl transition">
+                                เปิดลิงก์บัญชี
+                            </a>
+                        </div>
+                    ` : ''}
+                    ${readMailUrl ? `
+                        <div class="pt-2 border-t border-pink-100">
+                            <p class="text-slate-500 mb-1.5">ลิงก์อ่านเมลและรับ OTP ส่วนตัวของคุณ:</p>
+                            <a href="${readMailUrl}" target="_blank" class="block w-full text-center bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-3 rounded-xl transition">
+                                เปิดกล่องอ่านเมลของคุณ
+                            </a>
+                        </div>
+                    ` : ''}
+                </div>
+                <button onclick="copySingleOrderDetails('${orderId}')" class="w-full btn-cute-blue bg-sky-500 text-white py-2.5 rounded-2xl text-sm font-medium cursor-pointer flex items-center justify-center gap-1.5">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                    <span>คัดลอกทั้งหมด</span>
+                </button>
+                <button onclick="closeModal('orderModal')" class="w-full btn-cute bg-pink-500 text-white py-2.5 rounded-2xl text-sm font-medium cursor-pointer">
+                    เรียบร้อย
+                </button>
+            `;
+            document.getElementById('orderModal').classList.remove('hidden');
+            document.getElementById('orderModal').classList.add('flex');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            renderProducts();
+            syncToGoogleSheet();
+        }
+
+        // หน้าต่างสั่งซื้อสินค้าหมวดหมู่เว็บไซต์ (ชำระเงิน + แนบสลิป + ส่งไอดีไลน์/คิวอาร์โค้ดไลน์)
+        let pendingWebsiteQrDataUrl = '';
+
+        function openWebsiteOrderModal(product) {
+            pendingWebsiteQrDataUrl = '';
+            const content = document.getElementById('orderModalContent');
+            content.innerHTML = `
+                <div class="space-y-1">
+                    <span class="bg-pink-100 text-pink-600 border border-pink-200 text-[11px] font-bold px-3 py-0.5 rounded-full">สั่งซื้อแพ็กเกจเว็บไซต์</span>
+                    <h3 class="font-cute text-lg sm:text-xl font-bold text-slate-800 pt-1">${product.name}</h3>
+                    <p class="text-xs text-slate-500">ชำระเงิน แนบสลิป และแจ้งช่องทางไลน์สำหรับส่งงาน</p>
+                </div>
+
+                <!-- กล่อง QR Code โอนเงิน -->
+                <div class="bg-white p-3.5 rounded-3xl border-2 border-dashed border-sky-300 text-center space-y-1.5 shadow-2xs">
+                    <div class="inline-block bg-gradient-to-r from-sky-400 to-pink-400 text-white text-[10px] font-bold px-3 py-0.5 rounded-full">
+                        THAI QR PAYMENT • PROMPTPAY
+                    </div>
+                    <div class="bg-white p-2 rounded-2xl inline-block border-2 border-pink-300">
+                        <img src="${paymentConfig.customQrUrl}" alt="PromptPay QR Code" onerror="this.onerror=null; this.src='https://placehold.co/180x180/FFFFFF/FB7185?text=QR+Code';" class="w-36 h-36 object-contain mx-auto">
+                    </div>
+                    <p class="font-bold text-slate-800 text-xs">ชื่อบัญชี: ${paymentConfig.accountName}</p>
+                    <p class="text-sky-600 font-cute font-bold text-base">ยอดชำระ: ${product.price.toFixed(2)} บาท</p>
+                    <p class="text-[10px] text-pink-600 font-semibold">ห้ามนำคิวอาโค้ดไปแอบอ้างเด็ดขาด</p>
+                </div>
+
+                <!-- ฟอร์มแนบสลิป และกรอกช่องทางส่งงานในไลน์ -->
+                <div class="bg-white p-4 rounded-2xl border border-pink-200 text-left space-y-3 text-xs">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">1. แนบสลิปโอนเงิน <span class="text-pink-500">*</span></label>
+                        <input type="file" id="webOrderSlipInput" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2.5 file:py-1.5 file:px-3.5 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-pink-100 file:text-pink-600 hover:file:bg-pink-200 cursor-pointer">
+                    </div>
+
+                    <div class="pt-2 border-t border-pink-100 space-y-2.5">
+                        <label class="block font-semibold text-sky-600">2. ช่องทางการส่งงานในไลน์ (ระบุอย่างใดอย่างหนึ่งหรือทั้งคู่) <span class="text-pink-500">*</span></label>
+                        <div>
+                            <label class="block text-[11px] text-slate-500 mb-1">ไอดีไลน์ (Line ID) สำหรับส่งงาน</label>
+                            <input type="text" id="webOrderLineId" placeholder="กรอก Line ID ของคุณ (เช่น @mumu123)" class="w-full px-3.5 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-500 mb-1">หรืออัปโหลดรูปภาพ QR Code ไลน์ของคุณ</label>
+                            <input type="file" id="webOrderLineQrInput" accept="image/*" onchange="previewWebOrderLineQr(event)" class="w-full text-xs text-slate-500 file:mr-2.5 file:py-1.5 file:px-3.5 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-sky-100 file:text-sky-600 hover:file:bg-sky-200 cursor-pointer">
+                            <div id="webOrderLineQrPreview" class="hidden mt-2 text-center bg-sky-50/60 p-2 rounded-xl border border-sky-200">
+                                <img id="webOrderLineQrImg" src="" alt="Line QR Preview" class="w-24 h-24 object-contain mx-auto rounded-lg border border-white shadow-2xs">
+                                <span class="text-[10px] text-sky-600 font-medium block mt-1">แนบคิวอาร์โค้ดไลน์เรียบร้อยแล้ว</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-500 mb-1">รายละเอียดเพิ่มเติม / ชื่อร้านที่ต้องการ (ถ้ามี)</label>
+                            <input type="text" id="webOrderNote" placeholder="เช่น ต้องการโทนสีชมพู-ฟ้า ชื่อร้าน..." class="w-full px-3.5 py-2 rounded-xl bg-pink-50/50 text-slate-800 border border-pink-200 focus:outline-none focus:border-sky-400">
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btnSubmitWebOrder" onclick="submitWebsiteOrder(${product.id})" class="w-full btn-cute bg-pink-500 text-white py-2.5 rounded-2xl text-sm font-semibold cursor-pointer flex items-center justify-center gap-1.5">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    <span>ยืนยันการชำระเงินและส่งข้อมูลเข้าไลน์</span>
+                </button>
+            `;
+            document.getElementById('orderModal').classList.remove('hidden');
+            document.getElementById('orderModal').classList.add('flex');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function previewWebOrderLineQr(event) {
+            const file = event.target.files[0];
+            const previewBox = document.getElementById('webOrderLineQrPreview');
+            if (!file) {
+                pendingWebsiteQrDataUrl = '';
+                previewBox.classList.add('hidden');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                pendingWebsiteQrDataUrl = e.target.result;
+                document.getElementById('webOrderLineQrImg').src = pendingWebsiteQrDataUrl;
+                previewBox.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function submitWebsiteOrder(productId) {
+            const product = productsData.find(p => p.id === productId);
+            if (!product) return;
+
+            const slipFile = document.getElementById('webOrderSlipInput').files[0];
+            const lineId = document.getElementById('webOrderLineId').value.trim();
+            const note = document.getElementById('webOrderNote').value.trim();
+            const submitBtn = document.getElementById('btnSubmitWebOrder');
+
+            if (!slipFile) {
+                showToast('กรุณาแนบสลิปโอนเงินก่อนยืนยันการสั่งซื้อนะคะ');
+                return;
+            }
+            if (!lineId && !pendingWebsiteQrDataUrl) {
+                showToast('กรุณากรอกไอดีไลน์ หรืออัปโหลดรูปภาพ QR Code ไลน์เพื่อส่งงานนะคะ');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-70', 'cursor-wait');
+            submitBtn.innerHTML = `<span>กำลังตรวจสอบสลิปและบันทึกออเดอร์...</span>`;
+
+            try {
+                // ตรวจสลิปซ้ำจากไฟล์
+                const fileSignature = `WEB_${slipFile.name}_${slipFile.size}_${slipFile.lastModified}`;
+                if (usedSlipRefs.has(fileSignature)) {
+                    throw new Error('ตรวจพบสลิปซ้ำ! สลิปใบนี้ถูกใช้งานไปแล้วค่ะ');
+                }
+                await new Promise(resolve => setTimeout(resolve, 1100));
+                usedSlipRefs.add(fileSignature);
+
+                const transRef = `WEB${Math.floor(10000000 + Math.random() * 90000000)}`;
+                const orderId = `WEB-${Math.floor(10000 + Math.random() * 90000)}`;
+                const now = new Date();
+                const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                const dateStr = now.toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' });
+
+                totalSold += 1;
+
+                // บันทึกประวัติสลิป
+                slipVerifyLogs.unshift({
+                    transRef: transRef,
+                    user: currentUser ? currentUser.username : 'Guest',
+                    amount: product.price,
+                    receiver: paymentConfig.accountName,
+                    date: dateStr,
+                    time: timeStr
+                });
+
+                // บันทึกออเดอร์เว็บไซต์พร้อม Line ID / QR Code ไลน์
+                orderHistory.unshift({
+                    id: orderId,
+                    buyer: currentUser ? currentUser.username : 'Guest',
+                    category: 'website',
+                    productName: product.name,
+                    price: product.price,
+                    account: lineId ? `Line ID: ${lineId}` : 'ส่งงานผ่าน QR Code ไลน์',
+                    password: note || 'ชำระเงินแนบสลิปเรียบร้อย',
+                    lineId: lineId,
+                    lineQrUrl: pendingWebsiteQrDataUrl,
+                    note: note,
+                    transRef: transRef,
+                    date: dateStr,
+                    time: timeStr
+                });
+
+                renderProducts();
+                syncToGoogleSheet();
+                showToast('ชำระเงินและส่งข้อมูลช่องทางไลน์สำเร็จแล้วค่ะ');
+
+                const content = document.getElementById('orderModalContent');
+                content.innerHTML = `
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 border border-emerald-200 text-emerald-600 flex items-center justify-center mx-auto font-bold text-lg">
+                        OK
+                    </div>
+                    <h3 class="font-cute text-xl font-bold text-slate-800">สั่งซื้อเว็บไซต์สำเร็จแล้ว!</h3>
+                    <p class="text-xs text-slate-500">เลขที่ออเดอร์: <b class="text-sky-600">${orderId}</b> (Ref: ${transRef})</p>
+                    <div class="bg-white p-4 rounded-2xl border border-pink-200 text-left space-y-2 text-xs shadow-2xs">
+                        <p><span class="text-slate-500">แพ็กเกจ:</span> <b class="text-slate-800">${product.name} (${product.price}.00 ฿)</b></p>
+                        ${lineId ? `<p><span class="text-slate-500">ไอดีไลน์รับงาน:</span> <span class="text-pink-600 font-bold select-all">${lineId}</span></p>` : ''}
+                        ${note ? `<p><span class="text-slate-500">รายละเอียดเพิ่มเติม:</span> <span class="text-slate-700">${note}</span></p>` : ''}
+                        ${pendingWebsiteQrDataUrl ? `
+                            <div class="pt-2 border-t border-pink-100 text-center">
+                                <p class="text-slate-500 mb-1.5">คิวอาร์โค้ดไลน์สำหรับส่งงานของคุณ:</p>
+                                <img src="${pendingWebsiteQrDataUrl}" alt="Customer Line QR" class="w-28 h-28 object-contain mx-auto rounded-xl border border-sky-200">
+                            </div>
+                        ` : ''}
+                        <div class="pt-2 border-t border-pink-100 text-sky-600 font-medium">
+                            แอดมินได้รับสลิปและช่องทางไลน์ของคุณเรียบร้อยแล้ว จะรีบติดต่อส่งงานให้ทางไลน์ทันทีค่ะ
+                        </div>
+                    </div>
+                    <button onclick="copySingleOrderDetails('${orderId}')" class="w-full btn-cute-blue bg-sky-500 text-white py-2.5 rounded-2xl text-sm font-medium cursor-pointer flex items-center justify-center gap-1.5">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                        <span>คัดลอกทั้งหมด</span>
+                    </button>
+                    <button onclick="closeModal('orderModal')" class="w-full btn-cute bg-pink-500 text-white py-2.5 rounded-2xl text-sm font-medium cursor-pointer">
+                        เรียบร้อย
+                    </button>
+                `;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            } catch (err) {
+                showToast(err.message);
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-70', 'cursor-wait');
+                submitBtn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i><span>ยืนยันการชำระเงินและส่งข้อมูลเข้าไลน์</span>`;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function openTopupModal() {
+            if (!currentUser) {
+                showToast('กรุณาสมัครสมาชิกหรือเข้าสู่ระบบก่อนเติมเงินนะคะ');
+                openAuthModal('register');
+                return;
+            }
+            updateTopupQR();
+            document.getElementById('topupModal').classList.remove('hidden');
+            document.getElementById('topupModal').classList.add('flex');
+        }
+
+        function openAuthModal(mode = 'register') {
+            switchAuthMode(mode);
+            document.getElementById('authModal').classList.remove('hidden');
+            document.getElementById('authModal').classList.add('flex');
+        }
+
+        function switchAuthMode(mode) {
+            const regForm = document.getElementById('registerForm');
+            const loginForm = document.getElementById('loginForm');
+            const regBtn = document.getElementById('tabRegisterBtn');
+            const loginBtn = document.getElementById('tabLoginBtn');
+            const title = document.getElementById('authModalTitle');
+            const subtitle = document.getElementById('authModalSubtitle');
+
+            if (mode === 'register') {
+                regForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                regBtn.className = 'py-2 rounded-xl text-xs sm:text-sm font-semibold bg-pink-500 text-white transition cursor-pointer';
+                loginBtn.className = 'py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-sky-300 transition cursor-pointer';
+                title.innerText = 'สมัครสมาชิกใหม่';
+                subtitle.innerText = 'สมัครสมาชิกฟรี เพื่อสะสมเครดิตและรับรหัสอัตโนมัติ 24 ชม.';
+            } else {
+                regForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                loginBtn.className = 'py-2 rounded-xl text-xs sm:text-sm font-semibold bg-sky-500 text-white transition cursor-pointer';
+                regBtn.className = 'py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-pink-300 transition cursor-pointer';
+                title.innerText = 'เข้าสู่ระบบ Mumu Store';
+                subtitle.innerText = 'กรอกชื่อผู้ใช้และรหัสผ่านของคุณเพื่อเข้าสู่ระบบ';
+            }
+        }
+
+        function handleAdminQrUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                paymentConfig.customQrUrl = e.target.result;
+                document.getElementById('settingCustomQrUrl').value = e.target.result;
+                updateTopupQR();
+                showToast('อัปโหลดรูปภาพ QR Code ใหม่เรียบร้อยแล้วค่ะ');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function switchStockFormType(type) {
+            const socialForm = document.getElementById('formStockSocial');
+            const hotmailForm = document.getElementById('formStockHotmail');
+            const socialBtn = document.getElementById('stockTypeSocialBtn');
+            const hotmailBtn = document.getElementById('stockTypeHotmailBtn');
+
+            if (type === 'social') {
+                socialForm.classList.remove('hidden');
+                hotmailForm.classList.add('hidden');
+                socialBtn.className = 'flex-1 py-2 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-pink-500 text-white transition cursor-pointer';
+                hotmailBtn.className = 'flex-1 py-2 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 hover:text-sky-600 transition cursor-pointer';
+            } else {
+                socialForm.classList.add('hidden');
+                hotmailForm.classList.remove('hidden');
+                hotmailBtn.className = 'flex-1 py-2 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-sky-500 text-white transition cursor-pointer';
+                socialBtn.className = 'flex-1 py-2 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 hover:text-pink-600 transition cursor-pointer';
+            }
+        }
+
+        function renderAdminMailAccounts() {
+            const socialSelect = document.getElementById('socialStockProdId');
+            const hotmailSelect = document.getElementById('hotmailStockProdId');
+
+            if (socialSelect) {
+                const socialProds = productsData.filter(p => p.category !== 'hotmail' && p.category !== 'gmail' && p.category !== 'website');
+                const listToUse = socialProds.length > 0 ? socialProds : productsData;
+                socialSelect.innerHTML = listToUse.map(p => `<option value="${p.id}">[${p.emoji}] ${p.name} (${p.price}฿)</option>`).join('');
+            }
+
+            if (hotmailSelect) {
+                const mailProds = productsData.filter(p => p.category === 'hotmail' || p.category === 'gmail');
+                const listToUse = mailProds.length > 0 ? mailProds : productsData;
+                hotmailSelect.innerHTML = listToUse.map(p => `<option value="${p.id}">[${p.emoji}] ${p.name} (${p.price}฿)</option>`).join('');
+            }
+
+            const list = document.getElementById('adminMailAccountList');
+            if (!list) return;
+
+            if (mailAccountsPool.length === 0) {
+                list.innerHTML = `<div class="text-center py-6 text-slate-400 bg-white rounded-2xl border border-dashed border-pink-200 text-xs">ยังไม่มีรายการสต็อกบัญชีในระบบค่ะ</div>`;
+                return;
+            }
+
+            list.innerHTML = mailAccountsPool.map(item => {
+                const prod = productsData.find(p => p.id === item.productId);
+                const isAvail = item.status === 'available';
+                const isHotmail = item.stockType === 'hotmail';
+
+                return `
+                    <div class="bg-white p-3.5 rounded-2xl border ${isAvail ? (isHotmail ? 'border-sky-200' : 'border-pink-200') : 'border-slate-200 opacity-75'} flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-2xs">
+                        <div class="space-y-1 min-w-0 flex-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${isAvail ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-200 text-slate-600'}">
+                                    ${isAvail ? 'พร้อมส่ง' : 'ขายแล้ว'}
+                                </span>
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${isHotmail ? 'bg-sky-100 text-sky-600' : 'bg-pink-100 text-pink-600'}">
+                                    ${isHotmail ? 'HOTMAIL' : 'ACCOUNT'}
+                                </span>
+                                <span class="font-semibold text-slate-800">${item.email}</span>
+                                <span class="text-slate-400">(${prod ? prod.name : 'สินค้าทั่วไป'})</span>
+                            </div>
+                            <div class="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600">
+                                <span>รหัสผ่าน: <b class="font-mono text-pink-600">${item.password}</b></span>
+                                ${item.twoFA ? `<span>2FA: <b class="font-mono text-amber-600">${item.twoFA}</b></span>` : ''}
+                                ${item.mailCode ? `<span>โค้ดอ่านเมล: <b class="font-mono text-amber-600">${item.mailCode}</b></span>` : ''}
+                            </div>
+                            ${item.accountLink ? `<p class="text-pink-500 truncate">ลิงก์แอค: <a href="${item.accountLink}" target="_blank" class="underline hover:text-pink-600">${item.accountLink}</a></p>` : ''}
+                            ${item.readMailUrl ? `<p class="text-sky-600 truncate">ลิงก์อ่านเมล: <a href="${item.readMailUrl}" target="_blank" class="underline hover:text-sky-700">${item.readMailUrl}</a></p>` : ''}
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button onclick="adminDeleteMailAccount(${item.id})" class="px-2.5 py-1.5 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-600 border border-rose-200 cursor-pointer font-medium">
+                                ลบ
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function adminAddSocialStock() {
+            const productId = parseInt(document.getElementById('socialStockProdId').value);
+            const email = document.getElementById('socialStockEmail').value.trim();
+            const password = document.getElementById('socialStockPass').value.trim();
+            const twoFA = document.getElementById('socialStock2fa').value.trim();
+            const accountLink = document.getElementById('socialStockLink').value.trim();
+
+            if (!email || !password) {
+                showToast('กรุณากรอกอีเมล และรหัสผ่านบัญชีให้ครบถ้วนค่ะ');
+                return;
+            }
+
+            mailAccountsPool.unshift({
+                id: Date.now(),
+                stockType: 'social',
+                productId,
+                email,
+                password,
+                twoFA,
+                accountLink,
+                status: 'available'
+            });
+
+            // เพิ่มสต็อกสินค้า +1 อัตโนมัติ
+            const prod = productsData.find(p => p.id === productId);
+            if (prod) prod.stock += 1;
+
+            document.getElementById('socialStockEmail').value = '';
+            document.getElementById('socialStockPass').value = '';
+            document.getElementById('socialStock2fa').value = '';
+            document.getElementById('socialStockLink').value = '';
+
+            renderProducts();
+            renderAdminProducts();
+            renderAdminMailAccounts();
+            syncToGoogleSheet();
+            showToast(`เติมสต็อกแอค ${email} เรียบร้อยแล้วค่ะ`);
+        }
+
+        function adminAddHotmailStock() {
+            const productId = parseInt(document.getElementById('hotmailStockProdId').value);
+            const email = document.getElementById('hotmailStockEmail').value.trim();
+            const password = document.getElementById('hotmailStockPass').value.trim();
+            const mailCode = document.getElementById('hotmailStockCode').value.trim();
+            const readMailUrl = document.getElementById('hotmailStockReadUrl').value.trim();
+
+            if (!email || !password || !readMailUrl) {
+                showToast('กรุณากรอกอีเมล รหัสผ่าน และลิงก์อ่านเมลให้ครบถ้วนค่ะ');
+                return;
+            }
+
+            mailAccountsPool.unshift({
+                id: Date.now(),
+                stockType: 'hotmail',
+                productId,
+                email,
+                password,
+                mailCode,
+                readMailUrl,
+                status: 'available'
+            });
+
+            // เพิ่มสต็อกสินค้า +1 อัตโนมัติ
+            const prod = productsData.find(p => p.id === productId);
+            if (prod) prod.stock += 1;
+
+            document.getElementById('hotmailStockEmail').value = '';
+            document.getElementById('hotmailStockPass').value = '';
+            document.getElementById('hotmailStockCode').value = '';
+            document.getElementById('hotmailStockReadUrl').value = '';
+
+            renderProducts();
+            renderAdminProducts();
+            renderAdminMailAccounts();
+            syncToGoogleSheet();
+            showToast(`เติมสต็อก Hotmail ${email} เรียบร้อยแล้วค่ะ`);
+        }
+
+        function selectTopupAmount(amount) {
+            document.getElementById('topupAmountInput').value = amount;
+            updateTopupQR();
+        }
+
+        function updateTopupQR() {
+            const amount = parseFloat(document.getElementById('topupAmountInput').value) || 0;
+            document.getElementById('displayQrAmount').innerText = amount.toFixed(2);
+            document.getElementById('displayBankAccountName').innerText = `ชื่อบัญชี: ${paymentConfig.accountName}`;
+            if (paymentConfig.customQrUrl) {
+                document.getElementById('promptpayQrImg').src = paymentConfig.customQrUrl;
+            }
+            const badge = document.getElementById('slipApiStatusBadge');
+            if (badge) {
+                badge.innerText = paymentConfig.apiMode === 'live' && paymentConfig.apiUrl
+                    ? `API Live (${paymentConfig.apiProvider.toUpperCase()})`
+                    : `API Verify Ready`;
+            }
+        }
+
+        function previewSelectedSlip(event) {
+            const file = event.target.files[0];
+            const resultBox = document.getElementById('slipVerifyResultBox');
+            if (!file) {
+                resultBox.classList.add('hidden');
+                return;
+            }
+            resultBox.classList.remove('hidden');
+            resultBox.className = 'bg-white p-3 rounded-2xl border border-sky-200 text-xs space-y-1';
+            resultBox.innerHTML = `
+                <div class="flex items-center justify-between text-sky-600">
+                    <span class="font-semibold">เตรียมพร้อมตรวจสอบไฟล์สลิป</span>
+                    <span>${(file.size / 1024).toFixed(1)} KB</span>
+                </div>
+                <p class="text-slate-500 truncate">ไฟล์: ${file.name}</p>
+            `;
+        }
+
+        async function confirmTopupWithQR() {
+            const amount = parseFloat(document.getElementById('topupAmountInput').value);
+            const fileInput = document.getElementById('slipFileInput');
+            const slipFile = fileInput.files[0];
+            const resultBox = document.getElementById('slipVerifyResultBox');
+            const submitBtn = document.getElementById('btnConfirmTopupApi');
+
+            if (!amount || amount <= 0) {
+                showToast('กรุณาระบุจำนวนเงินที่ต้องการเติมค่ะ');
+                return;
+            }
+
+            if (!slipFile) {
+                showToast('กรุณาแนบรูปภาพสลิปโอนเงินก่อนกดตรวจสอบค่ะ');
+                return;
+            }
+
+            // แสดงสถานะกำลังเชื่อมต่อ API ตรวจสอบสลิป
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-70', 'cursor-wait');
+            submitBtn.innerHTML = `<span>กำลังส่งสลิปตรวจสอบผ่าน API...</span>`;
+
+            resultBox.classList.remove('hidden');
+            resultBox.className = 'bg-white p-3.5 rounded-2xl border border-sky-300 text-xs space-y-1.5';
+            resultBox.innerHTML = `
+                <div class="flex items-center gap-2 text-sky-600 font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-sky-500 animate-ping"></span>
+                    <span>กำลังอ่าน QR Code และตรวจสอบข้อมูลสลิปกับธนาคาร...</span>
+                </div>
+            `;
+
+            try {
+                let verifyData = null;
+
+                if (paymentConfig.apiMode === 'live' && paymentConfig.apiUrl) {
+                    // เชื่อมต่อ REST API ตรวจสอบสลิปจริง (เช่น SlipOK / EasySlip / Custom API)
+                    const formData = new FormData();
+                    formData.append('files', slipFile);
+                    formData.append('file', slipFile);
+                    formData.append('amount', amount);
+                    formData.append('log', 'true');
+
+                    const headers = {};
+                    if (paymentConfig.apiKey) {
+                        if (paymentConfig.apiProvider === 'slipok') {
+                            headers['x-authorization'] = paymentConfig.apiKey;
+                        } else {
+                            headers['Authorization'] = `Bearer ${paymentConfig.apiKey}`;
+                        }
+                    }
+
+                    const response = await fetch(paymentConfig.apiUrl, {
+                        method: 'POST',
+                        headers: headers,
+                        body: formData
+                    });
+
+                    const json = await response.json();
+                    if (!response.ok || json.success === false || json.status === 400) {
+                        throw new Error(json.message || 'ไม่สามารถยืนยันสลิปจาก API ได้');
+                    }
+
+                    const slipInfo = json.data || json;
+                    verifyData = {
+                        transRef: slipInfo.transRef || slipInfo.ref || `REF-${Date.now()}`,
+                        amount: parseFloat(slipInfo.amount || amount),
+                        receiverName: (slipInfo.receiver && (slipInfo.receiver.displayName || slipInfo.receiver.name)) || 'ชรินพัชร เพชรสวน',
+                        senderName: (slipInfo.sender && (slipInfo.sender.displayName || slipInfo.sender.name)) || currentUser.username,
+                        bankName: (slipInfo.sendingBank) || 'ธนาคารไทย (Verified API)'
+                    };
+                } else {
+                    // จำลองการตอบกลับจาก Slip Verification API (Sandbox) พร้อมตรวจสลิปซ้ำจากชื่อไฟล์+ขนาดไฟล์
+                    await new Promise(resolve => setTimeout(resolve, 1300));
+                    const fileSignature = `${slipFile.name}_${slipFile.size}_${slipFile.lastModified}`;
+                    if (usedSlipRefs.has(fileSignature)) {
+                        throw new Error('ตรวจพบสลิปซ้ำ! สลิปใบนี้ถูกใช้งานเติมเงินเข้าระบบไปแล้วค่ะ');
+                    }
+                    usedSlipRefs.add(fileSignature);
+
+                    verifyData = {
+                        transRef: `TXN${Math.floor(100000000 + Math.random() * 900000000)}`,
+                        amount: amount,
+                        receiverName: 'ชรินพัชร เพชรสวน',
+                        senderName: currentUser ? currentUser.username : 'Member',
+                        bankName: 'PromptPay / KBank API Verified'
+                    };
+                }
+
+                // ตรวจสอบเลขอ้างอิงสลิปซ้ำ
+                if (usedSlipRefs.has(verifyData.transRef)) {
+                    throw new Error(`เลขอ้างอิงสลิป ${verifyData.transRef} ถูกใช้งานไปแล้วค่ะ`);
+                }
+                usedSlipRefs.add(verifyData.transRef);
+
+                // ตรวจสอบชื่อบัญชีผู้รับเงิน (ชรินพัชร เพชรสวน)
+                if (paymentConfig.verifyReceiverName && !verifyData.receiverName.includes('ชรินพัชร')) {
+                    throw new Error(`ชื่อบัญชีผู้รับไม่ถูกต้อง (พบ: ${verifyData.receiverName}) กรุณาโอนเข้าบัญชี ชรินพัชร เพชรสวน เท่านั้น`);
+                }
+
+                // เติมเครดิตเข้าบัญชีสำเร็จ
+                const creditedAmount = verifyData.amount;
+                userBalance += creditedAmount;
+                if (currentUser) {
+                    currentUser.balance = userBalance;
+                }
+                document.getElementById('userBalance').innerText = `${userBalance.toFixed(2)} ฿`;
+
+                slipVerifyLogs.unshift({
+                    transRef: verifyData.transRef,
+                    user: currentUser ? currentUser.username : 'Guest',
+                    amount: creditedAmount,
+                    receiver: verifyData.receiverName,
+                    date: new Date().toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' }),
+                    time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
+                });
+
+                resultBox.className = 'bg-white p-3.5 rounded-2xl border border-sky-300 text-xs space-y-1';
+                resultBox.innerHTML = `
+                    <p class="text-sky-600 font-bold">ตรวจสอบสลิปผ่าน API สำเร็จ</p>
+                    <p class="text-slate-600">เลขอ้างอิง: <span class="font-mono text-pink-600">${verifyData.transRef}</span></p>
+                    <p class="text-slate-600">ผู้รับเงิน: <span class="text-slate-800 font-medium">${verifyData.receiverName}</span></p>
+                    <p class="text-slate-600">ยอดเงินเข้า: <span class="text-sky-600 font-bold">+${creditedAmount.toFixed(2)} ฿</span></p>
+                `;
+
+                fileInput.value = '';
+                syncToGoogleSheet();
+                showToast(`ตรวจสอบสลิปสำเร็จ เติมเงิน +${creditedAmount.toFixed(2)} ฿ เรียบร้อยแล้วค่ะ`);
+
+                setTimeout(() => {
+                    closeModal('topupModal');
+                    resultBox.classList.add('hidden');
+                }, 1600);
+
+            } catch (err) {
+                resultBox.className = 'bg-white p-3.5 rounded-2xl border border-rose-300 text-xs space-y-1';
+                resultBox.innerHTML = `
+                    <p class="text-rose-500 font-bold">การตรวจสอบสลิปไม่ผ่าน</p>
+                    <p class="text-slate-600">${err.message}</p>
+                `;
+                showToast(err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-70', 'cursor-wait');
+                submitBtn.innerHTML = `<i data-lucide="shield-check" class="w-4 h-4"></i><span>ส่งสลิปตรวจสอบผ่าน API</span>`;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPass = document.getElementById('regConfirmPassword').value;
+
+            if (password !== confirmPass) {
+                showToast('รหัสผ่านทั้งสองช่องไม่ตรงกันค่ะ กรุณาตรวจสอบอีกครั้ง');
+                return;
+            }
+
+            const exists = registeredUsers.some(u => u.username.toLowerCase() === username.toLowerCase() || u.email.toLowerCase() === email.toLowerCase());
+            if (exists) {
+                showToast('ชื่อผู้ใช้หรืออีเมลนี้ถูกใช้งานแล้วค่ะ ลองใช้ชื่ออื่นน้า');
+                return;
+            }
+
+            const newUser = {
+                username,
+                email,
+                password,
+                balance: 0.00
+            };
+            registeredUsers.push(newUser);
+
+            // อัปเดตตัวเลขสมาชิกทั้งหมดบนหน้าแรกทันที
+            const totalMembersEl = document.getElementById('totalMembersDisplay');
+            if (totalMembersEl) {
+                totalMembersEl.innerHTML = `${registeredUsers.length.toLocaleString()} <span class="text-xs font-normal text-slate-500">คน</span>`;
+            }
+
+            syncToGoogleSheet();
+
+            // สลับไปหน้าเข้าสู่ระบบพร้อมเติมชื่อผู้ใช้ให้อัตโนมัติ
+            document.getElementById('loginIdentifier').value = username;
+            document.getElementById('loginPassword').value = '';
+            switchAuthMode('login');
+            showToast(`สมัครสมาชิกสำเร็จ กรุณาเข้าสู่ระบบด้วยบัญชี ${username} ค่ะ`);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const identifier = document.getElementById('loginIdentifier').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            const foundUser = registeredUsers.find(
+                u => (u.username.toLowerCase() === identifier.toLowerCase() || u.email.toLowerCase() === identifier.toLowerCase()) && u.password === password
+            );
+
+            if (!foundUser) {
+                showToast('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้องค่ะ (หากยังไม่มีบัญชี กรุณาสมัครสมาชิกก่อนน้า)');
+                return;
+            }
+
+            currentUser = foundUser;
+            userBalance = foundUser.balance;
+            updateAuthUI();
+            closeModal('authModal');
+            showToast(`เข้าสู่ระบบสำเร็จ ยินดีต้อนรับคุณ ${foundUser.username}`);
+        }
+
+        function logoutUser() {
+            if (currentUser) {
+                currentUser.balance = userBalance;
+            }
+            currentUser = null;
+            userBalance = 0;
+            updateAuthUI();
+            showToast('ออกจากระบบเรียบร้อยแล้วค่ะ แล้วพบกันใหม่น้า');
+        }
+
+        function updateAuthUI() {
+            const guestActions = document.getElementById('navGuestActions');
+            const userBadge = document.getElementById('navUserBadge');
+            const balanceBtn = document.getElementById('navBalanceBtn');
+            const historyBtn = document.getElementById('navHistoryBtn');
+            const heroAuthBtn = document.getElementById('heroAuthBtn');
+
+            if (currentUser) {
+                guestActions.classList.add('hidden');
+                userBadge.classList.remove('hidden');
+                userBadge.classList.add('flex');
+                balanceBtn.classList.remove('hidden');
+                balanceBtn.classList.add('flex');
+                if (historyBtn) {
+                    historyBtn.classList.remove('hidden');
+                    historyBtn.classList.add('flex');
+                }
+
+                document.getElementById('navUsernameDisplay').innerText = currentUser.username;
+                document.getElementById('userBalance').innerText = `${userBalance.toFixed(2)} ฿`;
+
+                heroAuthBtn.innerHTML = '<i data-lucide="wallet" class="w-4 h-4"></i><span>เติมเงินอัตโนมัติ</span>';
+                heroAuthBtn.onclick = openTopupModal;
+            } else {
+                guestActions.classList.remove('hidden');
+                userBadge.classList.add('hidden');
+                userBadge.classList.remove('flex');
+                balanceBtn.classList.add('hidden');
+                balanceBtn.classList.remove('flex');
+                if (historyBtn) {
+                    historyBtn.classList.add('hidden');
+                    historyBtn.classList.remove('flex');
+                }
+
+                heroAuthBtn.innerHTML = '<i data-lucide="user-plus" class="w-4 h-4"></i><span>สมัครสมาชิกฟรี</span>';
+                heroAuthBtn.onclick = () => openAuthModal('register');
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // ================= ระบบประวัติการสั่งซื้อ & เติมเงินสำหรับลูกค้า =================
+        function openCustomerHistoryModal() {
+            if (!currentUser) {
+                showToast('กรุณาเข้าสู่ระบบก่อนดูประวัติการใช้งานนะคะ');
+                openAuthModal('login');
+                return;
+            }
+            renderCustomerHistory();
+            switchCustomerHistoryTab('orders');
+            document.getElementById('customerHistoryModal').classList.remove('hidden');
+            document.getElementById('customerHistoryModal').classList.add('flex');
+        }
+
+        function switchCustomerHistoryTab(tab) {
+            const ordersList = document.getElementById('custHistoryOrdersList');
+            const topupsList = document.getElementById('custHistoryTopupsList');
+            const ordersBtn = document.getElementById('custHistOrdersBtn');
+            const topupsBtn = document.getElementById('custHistTopupsBtn');
+
+            if (tab === 'orders') {
+                ordersList.classList.remove('hidden');
+                topupsList.classList.add('hidden');
+                ordersBtn.className = 'py-2 rounded-xl text-xs sm:text-sm font-semibold bg-pink-500 text-white transition cursor-pointer';
+                topupsBtn.className = 'py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-pink-200 hover:border-sky-400 transition cursor-pointer';
+            } else {
+                ordersList.classList.add('hidden');
+                topupsList.classList.remove('hidden');
+                topupsBtn.className = 'py-2 rounded-xl text-xs sm:text-sm font-semibold bg-sky-500 text-white transition cursor-pointer';
+                ordersBtn.className = 'py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-pink-200 hover:border-pink-400 transition cursor-pointer';
+            }
+        }
+
+        function copyTextSafe(text, successMsg) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast(successMsg || 'คัดลอกข้อมูลเรียบร้อยแล้วค่ะ');
+            } catch (err) {
+                showToast('ไม่สามารถคัดลอกอัตโนมัติได้ กรุณากดคัดลอกด้วยตนเองนะคะ');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function formatOrderCopyText(ord) {
+            if (ord.category === 'website') {
+                let webLines = [
+                    `แพ็กเกจเว็บไซต์: ${ord.productName} (${ord.id})`,
+                    `ยอดชำระ: ${ord.price}.00 ฿`
+                ];
+                if (ord.lineId) webLines.push(`Line ID รับงาน: ${ord.lineId}`);
+                if (ord.lineQrUrl) webLines.push(`QR Code ไลน์: แนบรูปภาพแล้ว`);
+                if (ord.note) webLines.push(`รายละเอียดเพิ่มเติม: ${ord.note}`);
+                return webLines.join('\n');
+            }
+            let lines = [
+                `สินค้า: ${ord.productName} (${ord.id})`,
+                `Email / ID: ${ord.account}`,
+                `Password: ${ord.password}`
+            ];
+            if (ord.twoFA) lines.push(`2FA: ${ord.twoFA}`);
+            if (ord.mailCode) lines.push(`โค้ดอ่านเมล: ${ord.mailCode}`);
+            if (ord.accountLink) lines.push(`ลิงก์บัญชี: ${ord.accountLink}`);
+            if (ord.readMailUrl) lines.push(`ลิงก์อ่านเมล: ${ord.readMailUrl}`);
+            return lines.join('\n');
+        }
+
+        function copySingleOrderDetails(orderId) {
+            const ord = orderHistory.find(o => o.id === orderId);
+            if (!ord) return;
+            copyTextSafe(formatOrderCopyText(ord), `คัดลอกข้อมูลบัญชี ${ord.id} เรียบร้อยแล้วค่ะ`);
+        }
+
+        function copyAllCustomerOrders() {
+            if (!currentUser) return;
+            const myOrders = orderHistory.filter(o => o.buyer === currentUser.username);
+            if (myOrders.length === 0) {
+                showToast('ไม่มีรายการสั่งซื้อให้คัดลอกค่ะ');
+                return;
+            }
+            const allText = myOrders.map((ord, idx) => `--- รายการที่ ${idx + 1} ---\n${formatOrderCopyText(ord)}`).join('\n\n');
+            copyTextSafe(allText, `คัดลอกทั้งหมด (${myOrders.length} รายการ) เรียบร้อยแล้วค่ะ`);
+        }
+
+        function renderCustomerHistory() {
+            const myOrders = orderHistory.filter(o => o.buyer === currentUser.username);
+            const myTopups = slipVerifyLogs.filter(t => t.user === currentUser.username);
+
+            document.getElementById('custOrderCountBadge').innerText = myOrders.length;
+            document.getElementById('custTopupCountBadge').innerText = myTopups.length;
+
+            const ordersContainer = document.getElementById('custHistoryOrdersList');
+            if (myOrders.length === 0) {
+                ordersContainer.innerHTML = `
+                    <div class="text-center py-10 text-slate-400 bg-white rounded-3xl border border-dashed border-pink-200 text-xs">
+                        คุณยังไม่มีประวัติการสั่งซื้อสินค้าในขณะนี้ค่ะ
+                    </div>
+                `;
+            } else {
+                const headerBar = `
+                    <div class="flex items-center justify-between bg-white px-4 py-2.5 rounded-2xl border border-pink-200 shadow-2xs">
+                        <span class="text-xs font-medium text-slate-600">รายการสั่งซื้อทั้งหมด <b class="text-pink-500">${myOrders.length}</b> รายการ</span>
+                        <button onclick="copyAllCustomerOrders()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-pink-500 to-sky-500 hover:opacity-90 text-white text-xs font-semibold cursor-pointer inline-flex items-center gap-1.5 shadow-xs">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span>คัดลอกทั้งหมด</span>
+                        </button>
+                    </div>
+                `;
+                const itemsHtml = myOrders.map(ord => `
+                    <div class="bg-white p-4 rounded-2xl border border-pink-200 space-y-2 text-xs shadow-2xs">
+                        <div class="flex items-center justify-between gap-2 border-b border-pink-100 pb-2">
+                            <div>
+                                <span class="px-2 py-0.5 rounded-md bg-pink-100 text-pink-600 font-bold text-[11px]">${ord.id}</span>
+                                <span class="font-bold text-slate-800 ml-1.5 text-sm">${ord.productName}</span>
+                            </div>
+                            <span class="font-cute font-bold text-sky-600 text-sm">${ord.price}.00 ฿</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-slate-600">
+                            ${ord.category === 'website' ? `
+                                <p><span class="text-slate-400">ช่องทางส่งงาน:</span> <span class="text-pink-600 font-semibold select-all">${ord.lineId ? `Line ID: ${ord.lineId}` : 'แนบ QR Code ไลน์แล้ว'}</span></p>
+                                <p><span class="text-slate-400">สถานะ:</span> <span class="text-emerald-600 font-semibold">ชำระเงินแนบสลิปแล้ว</span></p>
+                                ${ord.note ? `<p class="sm:col-span-2"><span class="text-slate-400">รายละเอียด:</span> <span class="text-slate-700">${ord.note}</span></p>` : ''}
+                            ` : `
+                                <p><span class="text-slate-400">Email/ID:</span> <span class="font-mono text-pink-600 font-semibold select-all">${ord.account}</span></p>
+                                <p><span class="text-slate-400">Password:</span> <span class="font-mono text-sky-600 font-semibold select-all">${ord.password}</span></p>
+                                ${ord.twoFA ? `<p><span class="text-slate-400">2FA:</span> <span class="font-mono text-amber-600 font-semibold select-all">${ord.twoFA}</span></p>` : ''}
+                                ${ord.mailCode ? `<p><span class="text-slate-400">โค้ดอ่านเมล:</span> <span class="font-mono text-amber-600 font-semibold select-all">${ord.mailCode}</span></p>` : ''}
+                            `}
+                        </div>
+                        <div class="flex flex-wrap items-center justify-between gap-2 pt-1.5">
+                            <span class="text-[11px] text-slate-400">สั่งซื้อเมื่อ ${ord.date || ''} เวลา ${ord.time} น.</span>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button onclick="copySingleOrderDetails('${ord.id}')" class="px-3 py-1.5 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-600 border border-pink-200 font-semibold transition cursor-pointer inline-flex items-center gap-1">
+                                    <i data-lucide="copy" class="w-3 h-3"></i>
+                                    <span>คัดลอกทั้งหมด</span>
+                                </button>
+                                ${ord.accountLink ? `<a href="${ord.accountLink}" target="_blank" class="px-3 py-1.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-semibold transition">เปิดลิงก์บัญชี</a>` : ''}
+                                ${ord.readMailUrl ? `<a href="${ord.readMailUrl}" target="_blank" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold transition">เปิดอ่านเมล / OTP</a>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                ordersContainer.innerHTML = headerBar + itemsHtml;
+            }
+
+            const topupsContainer = document.getElementById('custHistoryTopupsList');
+            if (myTopups.length === 0) {
+                topupsContainer.innerHTML = `
+                    <div class="text-center py-10 text-slate-400 bg-white rounded-3xl border border-dashed border-sky-200 text-xs">
+                        คุณยังไม่มีประวัติการเติมเงินในขณะนี้ค่ะ
+                    </div>
+                `;
+            } else {
+                topupsContainer.innerHTML = myTopups.map(top => `
+                    <div class="bg-white p-3.5 rounded-2xl border border-sky-200 flex items-center justify-between gap-2 text-xs shadow-2xs">
+                        <div class="space-y-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-600 font-bold text-[10px]">สำเร็จ</span>
+                                <span class="font-mono text-slate-700 font-semibold">${top.transRef}</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400">โอนเข้า: ${top.receiver} • ${top.date || ''} เวลา ${top.time} น.</p>
+                        </div>
+                        <span class="font-cute font-bold text-emerald-600 text-base">+${top.amount.toFixed(2)} ฿</span>
+                    </div>
+                `).join('');
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // ================= ระบบตั้งค่าหลังบ้าน (Admin Logic) =================
+        function openAdminModal() {
+            if (!isAdminAuthenticated) {
+                document.getElementById('adminPasswordInput').value = '';
+                document.getElementById('adminLoginModal').classList.remove('hidden');
+                document.getElementById('adminLoginModal').classList.add('flex');
+                setTimeout(() => document.getElementById('adminPasswordInput').focus(), 100);
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                return;
+            }
+            renderAdminSummary();
+            renderAdminProducts();
+            renderAdminMailAccounts();
+            renderAdminOrders();
+            document.getElementById('adminModal').classList.remove('hidden');
+            document.getElementById('adminModal').classList.add('flex');
+        }
+
+        function verifyAdminPassword(e) {
+            e.preventDefault();
+            const inputPass = document.getElementById('adminPasswordInput').value;
+            if (inputPass === adminPassword) {
+                isAdminAuthenticated = true;
+                closeModal('adminLoginModal');
+                showToast('ยืนยันรหัสผ่านสำเร็จ ยินดีต้อนรับเข้าสู่ระบบหลังบ้านค่ะ');
+                openAdminModal();
+            } else {
+                showToast('รหัสผ่านหลังบ้านไม่ถูกต้อง กรุณาลองใหม่อีกครั้งค่ะ');
+                document.getElementById('adminPasswordInput').value = '';
+                document.getElementById('adminPasswordInput').focus();
+            }
+        }
+
+        function switchAdminTab(tabName, btnEl) {
+            // ซ่อนทุก Tab
+            ['summary', 'products', 'mailLinks', 'settings', 'orders'].forEach(t => {
+                document.getElementById(`adminTab-${t}`).classList.add('hidden');
+            });
+            // รีเซ็ตสีปุ่ม
+            document.querySelectorAll('.admin-tab-btn').forEach(b => {
+                b.classList.remove('bg-pink-500', 'text-white');
+                b.classList.add('bg-white', 'text-slate-600');
+            });
+            // เปิด Tab ที่เลือก
+            document.getElementById(`adminTab-${tabName}`).classList.remove('hidden');
+            if (btnEl) {
+                btnEl.classList.remove('bg-white', 'text-slate-600');
+                btnEl.classList.add('bg-pink-500', 'text-white');
+            }
+            if (tabName === 'summary') renderAdminSummary();
+        }
+
+        function renderAdminSummary() {
+            const totalRevenue = orderHistory.reduce((sum, item) => sum + (item.price || 0), 0);
+            const totalTopup = slipVerifyLogs.reduce((sum, item) => sum + (item.amount || 0), 0);
+            const orderCount = orderHistory.length;
+            const avgOrder = orderCount > 0 ? (totalRevenue / orderCount) : 0;
+
+            document.getElementById('adminSummaryRevenue').innerText = `${totalRevenue.toLocaleString('th-TH', { minimumFractionDigits: 2 })} ฿`;
+            document.getElementById('adminSummaryTopup').innerText = `${totalTopup.toLocaleString('th-TH', { minimumFractionDigits: 2 })} ฿`;
+            document.getElementById('adminSummaryOrderCount').innerText = `${orderCount.toLocaleString()} รายการ`;
+            document.getElementById('adminSummaryAvgOrder').innerText = `${avgOrder.toLocaleString('th-TH', { minimumFractionDigits: 2 })} ฿`;
+
+            // สรุปยอดขายแยกตามหมวดหมู่
+            const barColors = ['bg-sky-500', 'bg-pink-500', 'bg-purple-500', 'bg-emerald-500', 'bg-amber-500', 'bg-indigo-500'];
+            const catContainer = document.getElementById('adminCategorySalesList');
+            catContainer.innerHTML = categoriesData.map((cat, idx) => {
+                const catOrders = orderHistory.filter(o => o.category === cat.key);
+                const catSum = catOrders.reduce((s, o) => s + o.price, 0);
+                const percent = totalRevenue > 0 ? Math.round((catSum / totalRevenue) * 100) : 0;
+                const barColor = barColors[idx % barColors.length];
+
+                return `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-slate-600">
+                            <span class="font-medium">${cat.label} (${catOrders.length} ชิ้น)</span>
+                            <span class="font-bold text-slate-800">${catSum.toFixed(2)} ฿ (${percent}%)</span>
+                        </div>
+                        <div class="w-full h-2 bg-pink-100 rounded-full overflow-hidden">
+                            <div class="${barColor} h-full rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // ประวัติการเติมเงินสลิปล่าสุดสำหรับแอดมิน
+            const topupContainer = document.getElementById('adminTopupLogsList');
+            if (slipVerifyLogs.length === 0) {
+                topupContainer.innerHTML = `<p class="text-slate-400 text-center py-6">ยังไม่มีรายการเติมเงินเข้ามาในขณะนี้ค่ะ</p>`;
+            } else {
+                topupContainer.innerHTML = slipVerifyLogs.map(log => `
+                    <div class="bg-pink-50/60 p-2.5 rounded-xl border border-sky-200 flex items-center justify-between gap-2">
+                        <div class="min-w-0">
+                            <p class="font-semibold text-slate-800 truncate">${log.user} <span class="text-[10px] font-mono text-slate-500">(${log.transRef})</span></p>
+                            <p class="text-[10px] text-slate-400">เวลา ${log.time} น.</p>
+                        </div>
+                        <span class="font-cute font-bold text-emerald-600 shrink-0">+${log.amount.toFixed(2)} ฿</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function adminDeleteMailAccount(id) {
+            const idx = mailAccountsPool.findIndex(m => m.id === id);
+            if (idx !== -1) {
+                mailAccountsPool.splice(idx, 1);
+                renderAdminMailAccounts();
+                syncToGoogleSheet();
+                showToast('ลบรายการสต็อกบัญชีเรียบร้อยแล้วค่ะ');
+            }
+        }
+
+        function renderAdminProducts() {
+            const list = document.getElementById('adminProductList');
+            list.innerHTML = '';
+
+            productsData.forEach(item => {
+                const isWebsite = item.category === 'website';
+                const row = document.createElement('div');
+                row.className = 'bg-white p-3.5 rounded-2xl border border-pink-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs';
+                row.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="px-2.5 h-10 rounded-xl bg-pink-50 border border-pink-200 flex items-center justify-center text-xs font-bold text-pink-600 shrink-0">${item.emoji}</span>
+                        <div>
+                            <p class="font-semibold text-sm text-slate-800">${item.name}</p>
+                            <p class="text-xs text-slate-500">ราคา: <b class="text-pink-500">${item.price} ฿</b> | ${isWebsite ? '<b class="text-emerald-600">รับออเดอร์ไม่จำกัด (ส่งงานในไลน์)</b>' : `สต็อกปัจจุบัน: <b class="${item.stock > 0 ? 'text-sky-600' : 'text-rose-500'}">${item.stock} ชิ้น</b>`}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 self-end sm:self-center">
+                        ${!isWebsite ? `
+                            <button onclick="adminUpdateStock(${item.id}, 5)" class="px-2.5 py-1.5 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-600 border border-sky-200 text-xs font-medium cursor-pointer" title="เติมสต็อก +5">
+                                +5 สต็อก
+                            </button>
+                            <button onclick="adminUpdateStock(${item.id}, -1)" class="px-2.5 py-1.5 rounded-xl bg-pink-100 hover:bg-pink-200 text-pink-600 border border-pink-200 text-xs font-medium cursor-pointer" title="ลดสต็อก -1">
+                                -1
+                            </button>
+                        ` : ''}
+                        <button onclick="adminDeleteProduct(${item.id})" class="px-2.5 py-1.5 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-600 border border-rose-200 text-xs font-medium cursor-pointer" title="ลบสินค้า">
+                            ลบ
+                        </button>
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function adminAddProduct() {
+            const name = document.getElementById('newProdName').value.trim();
+            const category = document.getElementById('newProdCat').value;
+            const price = parseFloat(document.getElementById('newProdPrice').value);
+            const stock = parseInt(document.getElementById('newProdStock').value) || 0;
+            const emoji = document.getElementById('newProdEmoji').value.trim() || 'ACC';
+            const desc = document.getElementById('newProdDesc').value.trim() || 'สินค้าพรีเมียมพร้อมส่งอัตโนมัติ 24 ชม.';
+            const imgUrlInput = document.getElementById('newProdImgUrl').value.trim();
+            const imgFileInput = document.getElementById('newProdImgFile');
+
+            if (!name || isNaN(price)) {
+                showToast('กรุณากรอกชื่อสินค้า และราคาให้ครบถ้วนค่ะ');
+                return;
+            }
+
+            const finalizeAdd = (finalImageUrl) => {
+                const newItem = {
+                    id: Date.now(),
+                    category,
+                    name,
+                    desc,
+                    price,
+                    stock,
+                    badge: 'สินค้าใหม่',
+                    bgGradient: 'from-pink-100 via-white to-sky-100',
+                    emoji,
+                    imageUrl: finalImageUrl || `https://placehold.co/400x220/FFE4E6/FB7185?text=${encodeURIComponent(name)}`
+                };
+
+                productsData.unshift(newItem);
+                renderProducts();
+                renderAdminProducts();
+                renderAdminMailAccounts();
+                syncToGoogleSheet();
+
+                // ล้างช่องกรอก
+                document.getElementById('newProdName').value = '';
+                document.getElementById('newProdPrice').value = '';
+                document.getElementById('newProdStock').value = '0';
+                document.getElementById('newProdDesc').value = '';
+                document.getElementById('newProdImgUrl').value = '';
+                if (imgFileInput) imgFileInput.value = '';
+
+                showToast(`เพิ่มสินค้า "${name}" ราคา ${price}฿ เรียบร้อยแล้วค่ะ`);
+            };
+
+            if (imgFileInput && imgFileInput.files && imgFileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => finalizeAdd(e.target.result);
+                reader.readAsDataURL(imgFileInput.files[0]);
+            } else {
+                finalizeAdd(imgUrlInput);
+            }
+        }
+
+        function adminUpdateStock(id, change) {
+            const prod = productsData.find(p => p.id === id);
+            if (!prod) return;
+            prod.stock = Math.max(0, prod.stock + change);
+            renderProducts();
+            renderAdminProducts();
+            syncToGoogleSheet();
+            showToast(`อัปเดตสต็อก ${prod.name} เป็น ${prod.stock} ชิ้นแล้วค่ะ`);
+        }
+
+        function adminDeleteProduct(id) {
+            const index = productsData.findIndex(p => p.id === id);
+            if (index === -1) return;
+            const deletedName = productsData[index].name;
+            productsData.splice(index, 1);
+            renderProducts();
+            renderAdminProducts();
+            syncToGoogleSheet();
+            showToast(`ลบสินค้า "${deletedName}" ออกจากร้านแล้วค่ะ`);
+        }
+
+        function saveStoreSettings() {
+            const storeName = document.getElementById('settingStoreName').value.trim() || 'Mumu Store';
+            const storeLogoUrl = document.getElementById('settingStoreLogoUrl').value.trim() || 'https://i.ibb.co/Gv5DV83j/IMG-4109.png';
+            const announcement = document.getElementById('settingAnnouncement').value.trim();
+            const heroDesc = document.getElementById('settingHeroDesc').value.trim();
+            const status = document.getElementById('settingStoreStatus').value;
+
+            // บันทึกค่า Google Apps Script Web App URL ลง localStorage ของเบราว์เซอร์ด้วย
+            const gsUrlInput = document.getElementById('settingGoogleScriptUrl');
+            if (gsUrlInput) {
+                googleScriptWebAppUrl = gsUrlInput.value.trim();
+                try {
+                    localStorage.setItem('mumu_gs_webapp_url', googleScriptWebAppUrl);
+                } catch (e) {}
+            }
+
+            // บันทึกค่าการรับเงิน & QR Code
+            paymentConfig.accountName = document.getElementById('settingAccountName').value.trim() || 'ชรินพัชร เพชรสวน เท่านั้น';
+            const customUrlInput = document.getElementById('settingCustomQrUrl').value.trim();
+            if (customUrlInput) {
+                paymentConfig.customQrUrl = customUrlInput;
+            }
+
+            // บันทึกค่า API ตรวจสอบสลิป
+            paymentConfig.apiMode = document.getElementById('settingSlipApiMode').value;
+            paymentConfig.apiProvider = document.getElementById('settingSlipApiProvider').value;
+            paymentConfig.apiUrl = document.getElementById('settingSlipApiUrl').value.trim();
+            paymentConfig.apiKey = document.getElementById('settingSlipApiKey').value.trim();
+            paymentConfig.verifyReceiverName = document.getElementById('settingVerifyReceiverName').checked;
+
+            updateTopupQR();
+
+            // อัปเดตชื่อร้านและรูปโลโก้ทุกจุดบนหน้าเว็บทันที
+            document.title = `${storeName} - ร้านแอปพรีเมียมสุดคิวท์ 24 ชม.`;
+            document.getElementById('navStoreName').innerText = storeName;
+            document.getElementById('heroStoreTitle').innerText = storeName;
+            document.getElementById('bannerStoreTitle').innerText = storeName;
+            document.getElementById('footerStoreName').innerText = storeName;
+
+            document.getElementById('navStoreLogo').innerHTML = `<img src="${storeLogoUrl}" alt="${storeName}" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FFE4E6/FB7185?text=Logo';" class="w-full h-full object-cover">`;
+            document.getElementById('bannerStoreLogo').src = storeLogoUrl;
+            document.getElementById('footerStoreLogo').src = storeLogoUrl;
+
+            if (announcement) document.getElementById('topAnnouncementBar').innerText = announcement;
+            if (heroDesc) document.getElementById('heroStoreDesc').innerText = heroDesc;
+
+            const statusDot = document.getElementById('storeStatusDot');
+            const statusText = document.getElementById('storeStatusText');
+            if (status === 'open') {
+                statusDot.className = 'w-2.5 h-2.5 rounded-full bg-sky-400 animate-ping';
+                statusText.innerText = 'พร้อมให้บริการตลอด 24 ชั่วโมง (ระบบอัตโนมัติ)';
+            } else {
+                statusDot.className = 'w-2.5 h-2.5 rounded-full bg-pink-400';
+                statusText.innerText = 'กำลังปรับปรุงระบบชั่วคราว (ติดต่อแอดมินได้ทาง Line)';
+            }
+
+            renderProducts();
+            syncToGoogleSheet();
+            showToast('บันทึกการตั้งค่าหน้าร้านเรียบร้อยแล้วค่ะ');
+        }
+
+        function renderAdminOrders() {
+            document.getElementById('adminOrderCount').innerText = orderHistory.length;
+            const list = document.getElementById('adminOrderList');
+            if (orderHistory.length === 0) return;
+
+            list.innerHTML = orderHistory.map(ord => `
+                <div class="bg-white p-3.5 rounded-2xl border border-sky-200 flex items-center justify-between gap-3 shadow-2xs">
+                    <div class="min-w-0 flex-1 space-y-1">
+                        <div>
+                            <span class="text-[11px] font-bold text-sky-600 bg-sky-100 px-2 py-0.5 rounded-md">${ord.id}</span>
+                            <span class="font-semibold text-slate-800 ml-1">${ord.productName}</span>
+                            <span class="text-[11px] text-slate-400 ml-1">(${ord.buyer})</span>
+                        </div>
+                        ${ord.category === 'website' ? `
+                            <p class="text-[11px] text-pink-600 font-semibold">ช่องทางส่งงาน: ${ord.lineId ? `Line ID: ${ord.lineId}` : 'ลูกค้าแนบ QR Code ไลน์'} ${ord.note ? `• รายละเอียด: ${ord.note}` : ''}</p>
+                            <p class="text-[10px] text-slate-400">ชำระเงินแนบสลิปแล้ว • เวลา ${ord.time} น.</p>
+                        ` : `
+                            <p class="text-[11px] text-slate-500">บัญชีที่ส่ง: ${ord.account} • เวลา ${ord.time} น.</p>
+                            ${ord.readMailUrl ? `<a href="${ord.readMailUrl}" target="_blank" class="text-[11px] text-sky-600 underline truncate block">${ord.readMailUrl}</a>` : ''}
+                        `}
+                    </div>
+                    ${ord.lineQrUrl ? `
+                        <a href="${ord.lineQrUrl}" target="_blank" title="คลิกเพื่อดูรูป QR Code ไลน์ลูกค้า" class="shrink-0">
+                            <img src="${ord.lineQrUrl}" alt="Line QR" class="w-12 h-12 object-contain rounded-xl border border-pink-200 bg-white p-0.5">
+                        </a>
+                    ` : ''}
+                    <span class="font-cute font-bold text-pink-500 shrink-0">+${ord.price}.00 ฿</span>
+                </div>
+            `).join('');
+        }
+
+        // Toast แจ้งเตือน
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // ================= ระบบรีวิวลูกค้า =================
+        function renderReviews() {
+            const grid = document.getElementById('reviewsGrid');
+            if (!grid) return;
+
+            grid.innerHTML = reviewsData.map(rev => {
+                const isSky = rev.theme === 'sky';
+                const borderClass = isSky ? 'border-sky-200' : 'border-pink-200';
+                const avatarBg = isSky ? 'bg-sky-100 text-sky-600' : 'bg-pink-100 text-pink-600';
+                const starColor = isSky ? 'text-sky-500' : 'text-pink-500';
+                const boxBorder = isSky ? 'border-sky-100 bg-sky-50/40' : 'border-pink-100 bg-pink-50/40';
+                const starsHtml = `${rev.stars}.0 / 5.0`;
+
+                return `
+                    <div class="bg-white/95 p-5 rounded-3xl border-2 ${borderClass} shadow-sm space-y-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="px-2 h-8 rounded-full ${avatarBg} text-[10px] font-bold flex items-center justify-center shrink-0">${rev.avatar}</span>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-slate-800 truncate">${rev.name}</p>
+                                    <p class="text-[11px] text-slate-500 truncate">${rev.product}</p>
+                                </div>
+                            </div>
+                            <span class="${starColor} text-xs font-bold shrink-0">${starsHtml}</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-600 p-3 rounded-2xl border ${boxBorder} leading-relaxed">
+                            "${rev.comment}"
+                        </p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function setReviewStars(count) {
+            selectedReviewStars = count;
+            document.getElementById('selectedStarText').innerText = `(${count}/5)`;
+            const buttons = document.querySelectorAll('#starRatingSelector .star-btn');
+            buttons.forEach((btn, idx) => {
+                btn.style.opacity = idx < count ? '1' : '0.3';
+            });
+        }
+
+        function submitCustomerReview() {
+            const avatar = document.getElementById('reviewAvatarInput').value;
+            const name = document.getElementById('reviewNameInput').value.trim();
+            const product = document.getElementById('reviewProductInput').value;
+            const comment = document.getElementById('reviewCommentInput').value.trim();
+
+            if (!name || !comment) {
+                showToast('กรุณากรอกชื่อและข้อความรีวิวก่อนส่งนะคะ');
+                return;
+            }
+
+            reviewsData.unshift({
+                avatar,
+                name,
+                product,
+                stars: selectedReviewStars,
+                comment,
+                theme: reviewsData.length % 2 === 0 ? 'pink' : 'sky'
+            });
+
+            document.getElementById('reviewNameInput').value = '';
+            document.getElementById('reviewCommentInput').value = '';
+            setReviewStars(5);
+            renderReviews();
+            syncToGoogleSheet();
+            showToast('ขอบคุณสำหรับรีวิวความประทับใจนะคะ');
+        }
+
+        // ================= ระบบเชื่อมต่อฐานข้อมูลถาวร GOOGLE SHEETS =================
+        let googleScriptWebAppUrl = '';
+        try {
+            googleScriptWebAppUrl = localStorage.getItem('mumu_gs_webapp_url') || '';
+        } catch (e) {}
+
+        function updateGoogleSheetBadge(statusText, isConnected) {
+            const badge = document.getElementById('gsSyncStatusBadge');
+            if (!badge) return;
+            badge.innerText = statusText;
+            badge.className = isConnected
+                ? 'text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 font-semibold'
+                : 'text-[11px] px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200 font-medium';
+        }
+
+        async function syncToGoogleSheet() {
+            if (!googleScriptWebAppUrl) return;
+            updateGoogleSheetBadge('กำลังบันทึกลงชีต...', true);
+            try {
+                const storeSettingsObj = {
+                    id: 'main_settings',
+                    storeName: document.getElementById('settingStoreName')?.value || 'Mumu Store',
+                    storeLogoUrl: document.getElementById('settingStoreLogoUrl')?.value || '',
+                    announcement: document.getElementById('settingAnnouncement')?.value || '',
+                    heroDesc: document.getElementById('settingHeroDesc')?.value || '',
+                    accountName: paymentConfig.accountName,
+                    customQrUrl: paymentConfig.customQrUrl,
+                    totalSold: totalSold
+                };
+
+                await fetch(googleScriptWebAppUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'syncAll',
+                        payload: {
+                            categories: categoriesData,
+                            products: productsData,
+                            mailAccounts: mailAccountsPool,
+                            users: registeredUsers,
+                            orders: orderHistory,
+                            topupLogs: slipVerifyLogs,
+                            reviews: reviewsData,
+                            settings: [storeSettingsObj]
+                        }
+                    })
+                });
+                updateGoogleSheetBadge('บันทึกข้อมูลลงชีตแล้ว', true);
+            } catch (err) {
+                console.error('Google Sheet Sync Error:', err);
+                updateGoogleSheetBadge('เชื่อมต่อชีตขัดข้อง', false);
+            }
+        }
+
+        async function syncFromGoogleSheet(notifyUser = false) {
+            const inputEl = document.getElementById('settingGoogleScriptUrl');
+            if (inputEl && inputEl.value.trim()) {
+                googleScriptWebAppUrl = inputEl.value.trim();
+                try {
+                    localStorage.setItem('mumu_gs_webapp_url', googleScriptWebAppUrl);
+                } catch (e) {}
+            }
+            if (!googleScriptWebAppUrl) {
+                if (notifyUser) showToast('กรุณาวางลิงก์ Google Apps Script Web App URL ก่อนนะคะ');
+                return;
+            }
+
+            updateGoogleSheetBadge('กำลังโหลดข้อมูลจากชีต...', true);
+            try {
+                const res = await fetch(googleScriptWebAppUrl);
+                const json = await res.json();
+                if (json.status === 'success' && json.data) {
+                    const d = json.data;
+                    if (Array.isArray(d.categories) && d.categories.length > 0) categoriesData = d.categories;
+                    if (Array.isArray(d.products) && d.products.length > 0) productsData = d.products;
+                    if (Array.isArray(d.mailAccounts)) mailAccountsPool = d.mailAccounts;
+                    if (Array.isArray(d.users)) registeredUsers = d.users;
+                    if (Array.isArray(d.orders)) orderHistory = d.orders;
+                    if (Array.isArray(d.topupLogs)) {
+                        slipVerifyLogs = d.topupLogs;
+                        d.topupLogs.forEach(t => { if (t.transRef) usedSlipRefs.add(t.transRef); });
+                    }
+                    if (Array.isArray(d.reviews) && d.reviews.length > 0) reviewsData = d.reviews;
+                    if (Array.isArray(d.settings) && d.settings.length > 0) {
+                        const s = d.settings[0];
+                        if (s.storeName) {
+                            document.getElementById('settingStoreName').value = s.storeName;
+                            document.getElementById('navStoreName').innerText = s.storeName;
+                            document.getElementById('heroStoreTitle').innerText = s.storeName;
+                            document.getElementById('bannerStoreTitle').innerText = s.storeName;
+                            document.getElementById('footerStoreName').innerText = s.storeName;
+                        }
+                        if (s.accountName) paymentConfig.accountName = s.accountName;
+                        if (s.customQrUrl) paymentConfig.customQrUrl = s.customQrUrl;
+                        if (typeof s.totalSold === 'number') totalSold = s.totalSold;
+                    }
+
+                    renderCategories();
+                    renderProducts();
+                    renderReviews();
+                    if (isAdminAuthenticated) {
+                        renderAdminSummary();
+                        renderAdminProducts();
+                        renderAdminMailAccounts();
+                        renderAdminOrders();
+                    }
+                    updateGoogleSheetBadge('เชื่อมต่อ Google Sheets สำเร็จ', true);
+                    if (notifyUser) showToast('ดึงข้อมูลถาวรจาก Google Sheets สำเร็จแล้วค่ะ');
+                }
+            } catch (err) {
+                console.error('Load Google Sheet Error:', err);
+                updateGoogleSheetBadge('ไม่สามารถอ่านข้อมูลจากชีตได้', false);
+                if (notifyUser) showToast('ไม่สามารถเชื่อมต่อ Google Sheets ได้ กรุณาตรวจสอบสิทธิ์ Anyone ใน Apps Script ค่ะ');
+            }
+        }
+
+        // เริ่มต้นทำงานเมื่อโหลดหน้าเว็บ
+        window.onload = function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            const gsInput = document.getElementById('settingGoogleScriptUrl');
+            if (gsInput && googleScriptWebAppUrl) {
+                gsInput.value = googleScriptWebAppUrl;
+            }
+            updateAuthUI();
+            renderCategories();
+            renderProducts();
+            renderReviews();
+            if (googleScriptWebAppUrl) {
+                syncFromGoogleSheet(false);
+            }
+        };
+    </script>
+</body>
+</html>
