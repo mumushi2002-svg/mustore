@@ -2735,7 +2735,7 @@
 
         // ================= ระบบเชื่อมต่อฐานข้อมูลถาวร GOOGLE SHEETS =================
         // นำลิงก์ Web App URL (ลงท้ายด้วย /exec) จาก Google Apps Script มาวางในเครื่องหมายคำพูดด้านล่างนี้ได้เลยค่ะ
-        const DEFAULT_GOOGLE_SCRIPT_URL = 'วางลิงก์_exec_ที่นี่';
+        const DEFAULT_GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-6LQyEsADuM6iMK8lNz6tnqE_PYqUDDP39GnMCm3k7Uh4DyaXvFzuruXjccIMTTs/exec';
 
         const isValidGoogleScriptUrl = (url) => typeof url === 'string' && url.startsWith('https://script.google.com/');
         let googleScriptWebAppUrl = isValidGoogleScriptUrl(DEFAULT_GOOGLE_SCRIPT_URL) ? DEFAULT_GOOGLE_SCRIPT_URL : '';
