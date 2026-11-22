@@ -442,7 +442,7 @@
                     THAI QR PAYMENT • PROMPTPAY
                 </div>
                 <div class="bg-white p-2.5 rounded-2xl inline-block shadow-sm border-2 border-pink-300">
-                    <img id="promptpayQrImg" src="GEM_PHOTO_FE0499BF-6BFE-4A24-A0E6-BADEC81CABC1_L0_001_recent_photo_FF91FAD7-75D6-47D0-8AB8-68705F362DCF.jpg" alt="PromptPay QR Code ชรินพัชร เพชรสวน" onerror="this.onerror=null; this.src='https://placehold.co/200x200/FFFFFF/FB7185?text=QR+Code';" class="w-44 h-44 object-contain mx-auto">
+                    <img id="promptpayQrImg" src="https://i.ibb.co/4ZbHMydH/IMG-2351.jpg" alt="PromptPay QR Code ชรินพัชร เพชรสวน" onerror="this.onerror=null; this.src='https://placehold.co/200x200/FFFFFF/FB7185?text=QR+Code';" class="w-44 h-44 object-contain mx-auto">
                 </div>
                 <div class="text-xs space-y-1">
                     <p class="font-bold text-slate-800 text-sm" id="displayBankAccountName">ชื่อบัญชี: ชรินพัชร เพชรสวน เท่านั้น</p>
@@ -818,7 +818,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-slate-500 mb-1">หรือใส่ลิงก์รูปภาพ QR Code (URL)</label>
-                                <input type="text" id="settingCustomQrUrl" value="GEM_PHOTO_FE0499BF-6BFE-4A24-A0E6-BADEC81CABC1_L0_001_recent_photo_FF91FAD7-75D6-47D0-8AB8-68705F362DCF.jpg" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
+                                <input type="text" id="settingCustomQrUrl" value="https://i.ibb.co/4ZbHMydH/IMG-2351.jpg" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl bg-pink-50/50 text-slate-800 border border-sky-200 focus:outline-none focus:border-pink-400">
                             </div>
                         </div>
 
@@ -1151,7 +1151,7 @@
         // ข้อมูลการรับเงิน & QR Code
         let paymentConfig = {
             accountName: 'ชรินพัชร เพชรสวน เท่านั้น',
-            customQrUrl: 'GEM_PHOTO_FE0499BF-6BFE-4A24-A0E6-BADEC81CABC1_L0_001_recent_photo_FF91FAD7-75D6-47D0-8AB8-68705F362DCF.jpg',
+            customQrUrl: 'https://i.ibb.co/4ZbHMydH/IMG-2351.jpg',
             apiMode: 'sandbox',
             apiProvider: 'slipok',
             apiUrl: '',
@@ -3251,7 +3251,7 @@
                 }));
 
                 const safeQrUrl = (paymentConfig.customQrUrl && paymentConfig.customQrUrl.length > 40000)
-                    ? 'GEM_PHOTO_FE0499BF-6BFE-4A24-A0E6-BADEC81CABC1_L0_001_recent_photo_FF91FAD7-75D6-47D0-8AB8-68705F362DCF.jpg'
+                    ? 'https://i.ibb.co/4ZbHMydH/IMG-2351.jpg'
                     : paymentConfig.customQrUrl;
 
                 const storeSettingsObj = {
@@ -3391,7 +3391,11 @@
                             document.getElementById('footerStoreName').innerText = s.storeName;
                         }
                         if (s.accountName) paymentConfig.accountName = s.accountName;
-                        if (s.customQrUrl) paymentConfig.customQrUrl = s.customQrUrl;
+                        if (s.customQrUrl && s.customQrUrl.startsWith('http')) {
+                            paymentConfig.customQrUrl = s.customQrUrl;
+                            const qrInputEl = document.getElementById('settingCustomQrUrl');
+                            if (qrInputEl) qrInputEl.value = s.customQrUrl;
+                        }
                         if (typeof s.totalSold === 'number') totalSold = s.totalSold;
                     }
 
